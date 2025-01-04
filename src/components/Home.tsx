@@ -41,7 +41,7 @@ const useStyles = makeStyles({
     margin: "1.5vw 8vh !important",
     fontFamily: "Poppins !important",
   },
-  logoIcon: { width: "60px", margin: "2%" },
+  logoIcon: { width: "60px", margin: "1% 2% 2% 2%" },
   box: { display: "flex", justifyContent: "space-between" },
   signupBox: {
     margin: "auto",
@@ -64,7 +64,7 @@ const Home = () => {
       <Card className={classes.mainCard}>
         <Box className={classes.box}>
           <Card>
-            <CardContent>
+            <CardContent onClick={() => navigate("/dashboard")}>
               <img className={classes.icons} src={donationIcon} alt="Donor" />
               <Typography className={classes.donorTypo} variant="h4">
                 Donor
@@ -85,7 +85,9 @@ const Home = () => {
           </Card>
         </Box>
         <Box className={classes.signupBox}>
-          <Button variant="contained">Sign up</Button>
+          <Button variant="contained" onClick={() => navigate("/register")}>
+            Sign up
+          </Button>
         </Box>
       </Card>
     </Box>
