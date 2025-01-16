@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import Header from "./components/Header";
-import Dashboard from "./components/Dashboard";
-import Donations from "./components/Donations";
+const Header = lazy(() => import("./components/Header"));
+const Dashboard = lazy(() => import("./components/Dashboard"));
+const Donations = lazy(() => import("./components/Donations"));
 const Home = lazy(() => import("./components/Home"));
 const Login = lazy(() => import("./components/Login"));
 const Register = lazy(() => import("./components/Register"));

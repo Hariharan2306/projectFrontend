@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   Box,
@@ -42,6 +42,14 @@ const Header: FC = () => {
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState("Dashboard");
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
+
+  const currentUrl = window.location.pathname;
+
+  useEffect(() => {
+    console.log(currentUrl);
+    setTabValue(headerTabs.find(({ url }) => url === currentUrl)!.value);
+  }, [currentUrl]);
+
   return (
     <>
       <Box className={classes.body}>
