@@ -1,5 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+const Requests = lazy(() => import("./components/Requests"));
+const Approvals = lazy(() => import("./components/Approvals"));
 const Header = lazy(() => import("./components/Header"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const Donations = lazy(() => import("./components/Donations"));
@@ -31,6 +33,24 @@ function App() {
               <>
                 <Header />
                 <Donations />
+              </>
+            }
+          />
+          <Route
+            path="/requests"
+            element={
+              <>
+                <Header />
+                <Requests />
+              </>
+            }
+          />
+          <Route
+            path="/approvals"
+            element={
+              <>
+                <Header />
+                <Approvals />
               </>
             }
           />

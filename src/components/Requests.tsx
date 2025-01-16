@@ -1,20 +1,17 @@
 import { FC } from "react";
 import { IconButton } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import raiseRequestGif from "../assets/requestGif.gif";
-import get from "lodash/get";
-import type { DonationData } from "../types/donations";
+import DoneAllIcon from "@mui/icons-material/DoneAll";
 import StyledDatagrid from "./StyledDatagrid";
-
-const useStyles = makeStyles({});
+import type { DonationData } from "../types/donations";
+import { get } from "lodash";
 
 const columns = [
   {
-    id: "donationId",
-    field: "donationId",
+    id: "requestId",
+    field: "requestId",
     numeric: false,
     disablePadding: false,
-    headerName: "Donation ID",
+    headerName: "Request ID",
     disableColumnMenu: true,
     flex: 1,
   },
@@ -55,28 +52,27 @@ const columns = [
     flex: 1,
   },
   {
-    id: "request",
-    field: "request",
+    id: "withdrawRequest",
+    field: "withdrawRequest",
     numeric: false,
     disablePadding: false,
-    headerName: "Claim Donation",
+    headerName: "Withdraw Request",
     disableColumnMenu: true,
     flex: 1,
     renderCell: ({ row }: DonationData) => (
-      <IconButton onClick={() => console.log(get(row, "donationId", ""))}>
-        <img src={raiseRequestGif} alt="raise request GIF" />
+      <IconButton onClick={() => console.log(get(row, "requestId", ""))}>
+        <DoneAllIcon />
       </IconButton>
     ),
   },
 ];
 
-const Donations: FC = () => {
-  const classes = useStyles();
-
+const Requests: FC = () => {
   return (
     <>
-      <StyledDatagrid columns={columns} addRequests />
+      <StyledDatagrid columns={columns} />
     </>
   );
 };
-export default Donations;
+
+export default Requests;

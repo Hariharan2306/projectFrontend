@@ -46,7 +46,6 @@ const Header: FC = () => {
   const currentUrl = window.location.pathname;
 
   useEffect(() => {
-    console.log(currentUrl);
     setTabValue(headerTabs.find(({ url }) => url === currentUrl)!.value);
   }, [currentUrl]);
 

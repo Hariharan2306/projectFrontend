@@ -32,10 +32,10 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     margin: "0 1vw 1vh 1vw",
   },
-
   searchAndAdd: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: ({ addRequests }: { addRequests: boolean }) =>
+      addRequests ? "space-between" : "right",
     width: "30vw",
     alignItems: "center",
     "& .MuiOutlinedInput-input": { padding: "9px 14px" },
@@ -43,10 +43,10 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = { columns: GridColDef[] };
+type Props = { columns: GridColDef[]; addRequests?: boolean };
 
-const StyledDatagrid: FC<Props> = ({ columns }: Props) => {
-  const classes = useStyles();
+const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
+  const classes = useStyles({ addRequests });
   const [search, setSearch] = useState("");
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +80,13 @@ const StyledDatagrid: FC<Props> = ({ columns }: Props) => {
                 },
               }}
             />
-            <Tooltip arrow title="Add New Donation">
-              <Button variant="contained">
-                <AddIcon />
-              </Button>
-            </Tooltip>
+            {addRequests && (
+              <Tooltip arrow title="Add New Donation">
+                <Button variant="contained">
+                  <AddIcon />
+                </Button>
+              </Tooltip>
+            )}
           </Box>
         </Box>
         <DataGrid
