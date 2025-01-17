@@ -13,6 +13,10 @@ import donationLogo from "../assets/donationLogo.svg";
 import sliderImg1 from "../assets/sliderImg1.png";
 import donationSliderImg2 from "../assets/donationSliderImg2.png";
 import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import type { RegisterProps, UserData } from "../types/common";
+import usersActions from "../actions/usersActions";
 
 const useStyles = makeStyles({
   logoIcon: { width: "60px", margin: "1% 2% 1% 2%" },
@@ -59,7 +63,7 @@ const useStyles = makeStyles({
   image: { width: "99%", objectFit: "cover" },
 });
 
-const Register: FC = () => {
+const Register: FC<RegisterProps> = ({ registerUser }: RegisterProps) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const url = window.location.pathname;
@@ -67,6 +71,11 @@ const Register: FC = () => {
 
   const [reciever, setReciever] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [registeredId, setRegisteredId] = useState("");
 
   const images = [sliderImg1, donationSliderImg2];
 
@@ -77,6 +86,19 @@ const Register: FC = () => {
     );
     return () => clearInterval(interval);
   }, [images.length]);
+
+  const onSubmit = () => {
+    const user: UserData = {
+      userName,
+      mobile,
+      location,
+      email,
+      reciever,
+      registeredId,
+    };
+    registerUser(user);
+    navigate("/dashboard");
+  };
 
   return (
     <>
@@ -96,20 +118,35 @@ const Register: FC = () => {
             <TextField
               placeholder="Enter unique Username"
               disabled={editOnly}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </Box>
           <Box className={classes.inputFields}>
             <Typography>Contact</Typography>
-            <TextField type="mobile" placeholder="Enter mobile number" />
+            <TextField
+              type="mobile"
+              placeholder="Enter mobile number"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+            />
           </Box>
           <Box className={classes.inputFields}>
             <Typography>Email</Typography>
-            <TextField placeholder="Enter Email" />
+            <TextField
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Box>
 
           <Box className={classes.inputFields}>
             <Typography>Location</Typography>
-            <TextField placeholder="Enter Pincode" />
+            <TextField
+              placeholder="Enter Pincode"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
           </Box>
         </Box>
         <Box className={classes.inputBox}>
@@ -124,10 +161,14 @@ const Register: FC = () => {
           {reciever && (
             <Box className={classes.inputFields}>
               <Typography>Registered ID</Typography>
-              <TextField placeholder="Enter organization Id" />
+              <TextField
+                placeholder="Enter organization Id"
+                value={registeredId}
+                onChange={(e) => setRegisteredId(e.target.value)}
+              />
             </Box>
           )}
-          <Button variant="contained" onClick={() => navigate("/home")}>
+          <Button variant="contained" onClick={onSubmit}>
             Submit
           </Button>
         </Box>
@@ -151,4 +192,8 @@ const Register: FC = () => {
   );
 };
 
-export default Register;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  registerUser: (user: UserData) => dispatch(usersActions.registerUser(user)),
+});
+
+export default connect(null, mapDispatchToProps)(Register);
