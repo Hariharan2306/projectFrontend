@@ -14,6 +14,7 @@ import { SearchRounded } from "@mui/icons-material";
 import { debounce } from "lodash";
 import DatePicker from "./Datepicker";
 import { DONATION_DATE_OPTIONS } from "../config/constants";
+import AddDonationDialog from "./AddDonationDialog";
 
 const useStyles = makeStyles({
   body: {
@@ -48,6 +49,7 @@ type Props = { columns: GridColDef[]; addRequests?: boolean };
 const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
   const classes = useStyles({ addRequests });
   const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -57,6 +59,10 @@ const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
   return (
     <>
       <Card className={classes.body}>
+        <AddDonationDialog
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+        />
         <Box className={classes.toolBar}>
           <DatePicker
             options={DONATION_DATE_OPTIONS}
@@ -82,7 +88,7 @@ const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
             />
             {addRequests && (
               <Tooltip arrow title="Add New Donation">
-                <Button variant="contained">
+                <Button variant="contained" onClick={() => setDialogOpen(true)}>
                   <AddIcon />
                 </Button>
               </Tooltip>

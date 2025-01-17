@@ -40,7 +40,7 @@ const useStyles = makeStyles({
 const Header: FC = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [tabValue, setTabValue] = useState("Dashboard");
+  const [tabValue, setTabValue] = useState("Donations");
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
 
   const currentUrl = window.location.pathname;

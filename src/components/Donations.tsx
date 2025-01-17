@@ -37,6 +37,15 @@ const columns = [
     flex: 1,
   },
   {
+    id: "location",
+    field: "location",
+    numeric: true,
+    disablePadding: false,
+    headerName: "Location",
+    disableColumnMenu: true,
+    flex: 1,
+  },
+  {
     id: "time",
     field: "time",
     numeric: false,
