@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { LoginDetails, UserData } from "../types/common";
 
-const api = axios.create({ baseURL: "http://localhost:4000" });
+const api = axios.create({ baseURL: "http://localhost:3002" });
 
 export const fetchUserDataService = async (
   userName?: string
@@ -39,7 +39,7 @@ export const loginUserService = async ({
   userMail,
   password,
 }: LoginDetails) => {
-  const url = `/users//login-user`;
+  const url = `/users/login-user`;
   const response = await api.post(url, { userMail, password });
   return response;
 };

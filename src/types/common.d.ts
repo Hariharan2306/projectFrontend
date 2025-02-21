@@ -7,6 +7,16 @@ export type UserData = {
   registeredId: string;
 };
 
+export type RegisterUserSagaProps = {
+  type: string;
+  userData: UserData;
+};
+
+export type LoginUserSagaProps = {
+  type: string;
+  loginUser: LoginDetails;
+};
+
 export type RegisterProps = { registerUser: (user: UserData) => void };
 
 export type LoginDetails = { userMail: string; password: string };
