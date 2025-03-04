@@ -12,9 +12,9 @@ const successRegisterUser = (successMessage: string) => ({
   type: UserTypes.SUCCESS_CREATE_USER_DETAILS,
   successMessage,
 });
-const failureRegisterUser = (error: Error) => ({
+const failureRegisterUser = (error: string) => ({
   type: UserTypes.FAILURE_CREATE_USER_DETAILS,
-  error: error.message,
+  error,
 });
 
 const loginUser = (loginDetails: LoginDetails) => ({
@@ -24,13 +24,18 @@ const loginUser = (loginDetails: LoginDetails) => ({
 const requestLoginUser = () => ({
   type: UserTypes.REQUEST_LOGIN_USER,
 });
-const successLoginUser = (successMessage: string) => ({
+const successLoginUser = ({ message = "", data = {} }) => ({
   type: UserTypes.SUCCESS_LOGIN_USER,
-  successMessage,
+  successMessage: message,
+  data,
 });
-const failureLoginUser = (error: Error) => ({
+const failureLoginUser = (error: string) => ({
   type: UserTypes.FAILURE_LOGIN_USER,
-  error: error.message,
+  error,
+});
+
+const resetMessage = () => ({
+  type: UserTypes.RESET_MESSAGE,
 });
 
 const usersActions = {
@@ -42,6 +47,7 @@ const usersActions = {
   requestLoginUser,
   successLoginUser,
   failureLoginUser,
+  resetMessage,
 };
 
 export default usersActions;

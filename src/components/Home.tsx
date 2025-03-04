@@ -64,7 +64,7 @@ const Home = () => {
       <Card className={classes.mainCard}>
         <Box className={classes.box}>
           <Card>
-            <CardContent onClick={() => navigate("/dashboard")}>
+            <CardContent onClick={() => navigate("/login")}>
               <img className={classes.icons} src={donationIcon} alt="Donor" />
               <Typography className={classes.donorTypo} variant="h4">
                 Donor

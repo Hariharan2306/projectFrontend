@@ -22,4 +22,7 @@ export const UserTypes = {
   REQUEST_LOGIN_USER: "REQUEST_LOGIN_USER",
   SUCCESS_LOGIN_USER: "SUCCESS_LOGIN_USER",
   FAILURE_LOGIN_USER: "FAILURE_LOGIN_USER",
+
+  // reset success and err messages
+  RESET_MESSAGE: "RESET_MESSAGE",
 };

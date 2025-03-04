@@ -1,30 +1,35 @@
+import { SagaIterator } from "redux-saga";
 import { all, call, put, takeLatest } from "redux-saga/effects";
+import get from "lodash/get";
+import usersActions from "../actions/usersActions";
+import { createUserService, loginUserService } from "../services/userServices";
+import { UserTypes } from "../actions/actionTypes";
 import type {
   LoginUserSagaProps,
   RegisterUserSagaProps,
 } from "../types/common";
-import usersActions from "../actions/usersActions";
-import { SagaIterator } from "redux-saga";
-import { UserTypes } from "../actions/actionTypes";
-import { createUserService, loginUserService } from "../services/userServices";
 
 function* registerUser({ userData }: RegisterUserSagaProps): SagaIterator {
   try {
     yield put(usersActions.requestRegisterUser());
     const response = yield call(() => createUserService(userData));
-    yield put(usersActions.successRegisterUser(response.message));
+    yield put(usersActions.successRegisterUser(response.data.message));
   } catch (error) {
-    yield put(usersActions.failureRegisterUser(error as Error));
+    yield put(
+      usersActions.failureRegisterUser(get(error, "response.data.error", ""))
+    );
   }
 }
 
-function* loginUser({ loginUser }: LoginUserSagaProps): SagaIterator {
+function* loginUser({ loginDetails }: LoginUserSagaProps): SagaIterator {
   try {
     yield put(usersActions.requestLoginUser());
-    const response = yield call(() => loginUserService(loginUser));
-    yield put(usersActions.successLoginUser(response.message));
+    const response = yield call(() => loginUserService(loginDetails));
+    yield put(usersActions.successLoginUser(response.data));
   } catch (error) {
-    yield put(usersActions.failureLoginUser(error as Error));
+    yield put(
+      usersActions.failureLoginUser(get(error, "response.data.error", ""))
+    );
   }
 }
 

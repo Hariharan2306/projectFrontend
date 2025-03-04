@@ -10,3 +10,6 @@ export const successMessageSelector = createSelector(userSelector, (state) =>
 export const errorMessageSelector = createSelector(userSelector, (state) =>
   get(state, "error", "")
 );
+export const userDataSelector = createSelector(userSelector, (state) =>
+  get(state, "userData", "")
+);

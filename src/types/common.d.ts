@@ -1,5 +1,6 @@
 export type UserData = {
   userName: string;
+  password: string;
   mobile: string;
   location: string;
   email: string;
@@ -14,11 +15,28 @@ export type RegisterUserSagaProps = {
 
 export type LoginUserSagaProps = {
   type: string;
-  loginUser: LoginDetails;
+  loginDetails: LoginDetails;
 };
 
-export type RegisterProps = { registerUser: (user: UserData) => void };
+export type RegisterProps = {
+  registerUser: (user: UserData) => void;
+  error: string;
+  successMessage: string;
+  resetMessage: VoidFunction;
+};
 
 export type LoginDetails = { userMail: string; password: string };
 
-export type LoginProps = { loginUser: (loginDetails: LoginDetails) => void };
+export type LoginProps = {
+  loginUser: (loginDetails: LoginDetails) => void;
+  error: string;
+  successMessage: string;
+  resetMessage: VoidFunction;
+  userCred: { userName: string; email: string };
+};
+
+export type AlertProps = {
+  resetMessage: VoidFunction;
+  message: string;
+  type: "error" | "success";
+};

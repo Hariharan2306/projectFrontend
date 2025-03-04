@@ -21,11 +21,19 @@ export const updateUserPasswordService = async ({
 };
 
 export const createUserService = async (userData: UserData) => {
-  const { userName, mobile, location, email, reciever, registeredId } =
-    userData as UserData;
+  const {
+    userName,
+    password,
+    mobile,
+    location,
+    email,
+    reciever,
+    registeredId,
+  } = userData as UserData;
   const url = "/users/create-user";
   const response = await api.post(url, {
     userName,
+    password,
     mobile,
     location,
     email,

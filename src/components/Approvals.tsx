@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import get from "lodash/get";
 import type { DonationData } from "../types/donations";
 import StyledDatagrid from "./StyledDatagrid";
 import { IconButton } from "@mui/material";

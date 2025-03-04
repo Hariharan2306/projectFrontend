@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import {
   Box,
@@ -10,9 +11,8 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { headerTabs } from "../config/constants";
 import Face6Icon from "@mui/icons-material/Face6";
+import { headerTabs } from "../config/constants";
 import donationLogo from "../assets/donationLogo.svg";
 
 const useStyles = makeStyles({
@@ -22,7 +22,6 @@ const useStyles = makeStyles({
     width: "100%",
     margin: "3vh 11vw 1vh 11vw",
     "& .MuiTab-root": { fontSize: "32px !important" },
-    "& .MuiTabs-scroller": { height: "9vh" },
     "& .MuiTabs-indicator": { backgroundColor: "unset" },
   },
   iconButton: {
@@ -40,14 +39,22 @@ const useStyles = makeStyles({
 const Header: FC = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const currentUrl = window.location.pathname;
+  const { userName, email: userMail } = JSON.parse(
+    sessionStorage.getItem("loggedUserData") || "{}"
+  );
+
   const [tabValue, setTabValue] = useState("Donations");
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
-
-  const currentUrl = window.location.pathname;
 
   useEffect(() => {
     setTabValue(headerTabs.find(({ url }) => url === currentUrl)!.value);
   }, [currentUrl]);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("loggedUserData");
+    navigate("/home");
+  };
 
   return (
     <>
@@ -83,8 +90,8 @@ const Header: FC = () => {
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
           <MenuItem key="userDetails" className={classes.userProfile}>
-            <Typography>Username</Typography>
-            <Typography>Usermail@gmail.com</Typography>
+            <Typography>{userName}</Typography>
+            <Typography>{userMail}</Typography>
           </MenuItem>
           <Divider variant="middle" />
           <MenuItem key="userDetails" onClick={() => navigate("/edit")}>
@@ -95,7 +102,7 @@ const Header: FC = () => {
             <Typography>Help </Typography>
           </MenuItem>
           <Divider variant="middle" />
-          <MenuItem key="logOut" onClick={() => navigate("/home")}>
+          <MenuItem key="logOut" onClick={handleLogout}>
             <Typography>Log out</Typography>
           </MenuItem>
         </Menu>
