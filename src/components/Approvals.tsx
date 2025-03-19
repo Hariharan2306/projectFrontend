@@ -75,3 +75,5 @@ const Approvals = () => {
 };
 
 export default Approvals;
+
+console.log("hi");
