@@ -22,6 +22,8 @@ import {
   errorMessageSelector,
   successMessageSelector,
 } from "../selectors/userSelector";
+import { useNavigate } from "react-router-dom";
+import LabeledInputs from "./LabeledInputs";
 
 const useStyles = makeStyles({
   logoIcon: { width: "60px", margin: "1% 2% 1% 2%" },
@@ -77,6 +79,7 @@ const Register: FC<RegisterProps> = ({
   const classes = useStyles();
   const url = window.location.pathname;
   const editOnly = url === "/edit";
+  const navigate = useNavigate();
 
   const [reciever, setReciever] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -108,6 +111,7 @@ const Register: FC<RegisterProps> = ({
       registeredId,
     };
     registerUser(user);
+    navigate("/home");
   };
 
   return (
@@ -127,33 +131,34 @@ const Register: FC<RegisterProps> = ({
       <Divider variant="middle" />
       <Card className={classes.inputs}>
         <Box className={classes.inputBox}>
-          <Box className={classes.inputFields}>
-            <Typography>User Name</Typography>
-            <TextField
-              placeholder="Enter unique Username"
-              disabled={editOnly}
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          </Box>
-          <Box className={classes.inputFields}>
-            <Typography>Password</Typography>
-            <TextField
-              type="password"
-              placeholder="Enter Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Box>
-          <Box className={classes.inputFields}>
-            <Typography>Contact</Typography>
-            <TextField
-              type="mobile"
-              placeholder="Enter mobile number"
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-            />
-          </Box>
+          <LabeledInputs
+            label="User Name"
+            placeholder="Enter Unique Username"
+            value={userName}
+            onChange={(value) => setUserName(value)}
+          />
+          <LabeledInputs
+            label="Password"
+            placeholder="Enter Password"
+            type="password"
+            value={password}
+            onChange={(value) => setPassword(value)}
+          />
+          <LabeledInputs
+            label="Contact"
+            placeholder="Enter mobile number"
+            type="mobile"
+            value={mobile}
+            onChange={(value) => setMobile(value)}
+          />
+          <LabeledInputs
+            label="Email"
+            placeholder="Enter Email"
+            type="email"
+            value={email}
+            onChange={(value) => setEmail(value)}
+          />
+
           <Box className={classes.inputFields}>
             <Typography>Email</Typography>
             <TextField
