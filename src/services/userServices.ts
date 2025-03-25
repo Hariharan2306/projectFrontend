@@ -3,14 +3,6 @@ import type { LoginDetails, UserData } from "../types/common";
 
 const api = axios.create({ baseURL: "http://localhost:3002" });
 
-export const fetchUserDataService = async (
-  userName?: string
-): Promise<object> => {
-  const url = `/users/fetch-details/${userName}`;
-  const response = await api.get(url);
-  return response;
-};
-
 export const updateUserPasswordService = async ({
   userMail,
   password,

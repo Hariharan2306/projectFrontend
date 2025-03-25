@@ -7,6 +7,9 @@ type userReducerTypes = {
   data: {
     userName: string;
     email: string;
+    // pincode
+    // TODO: handle it in different format
+    location: string;
   };
 };
 

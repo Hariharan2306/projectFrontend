@@ -158,15 +158,6 @@ const Register: FC<RegisterProps> = ({
             value={email}
             onChange={(value) => setEmail(value)}
           />
-
-          <Box className={classes.inputFields}>
-            <Typography>Email</Typography>
-            <TextField
-              placeholder="Enter Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Box>
         </Box>
         <Box className={classes.inputBox}>
           <Box className={classes.inputFields}>

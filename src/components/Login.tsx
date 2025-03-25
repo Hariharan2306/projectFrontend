@@ -59,8 +59,6 @@ const Login: FC<LoginProps> = ({
   useEffect(() => {
     if (!isEmpty(userCred))
       sessionStorage.setItem("loggedUserData", JSON.stringify(userCred));
-    // TODO
-    // add location pincode as well here in to session
     if (!isEmpty(successMessage)) {
       resetMessage();
       navigate("/dashboard");

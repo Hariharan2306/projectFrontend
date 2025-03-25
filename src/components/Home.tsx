@@ -1,9 +1,20 @@
+import { FC } from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import donationIcon from "../assets/donationIcon.svg";
 import orphanageLogo from "../assets/orphanageLogo.svg";
 import donationLogo from "../assets/donationLogo.svg";
 import { useNavigate } from "react-router-dom";
+import TimedAlert from "./TimedAlert";
+import { RootState } from "../apis/rootReducer";
+import {
+  errorMessageSelector,
+  successMessageSelector,
+} from "../selectors/userSelector";
+import usersActions from "../actions/usersActions";
+import type { AlertProps } from "../types/common";
 
 const useStyles = makeStyles({
   root: {
@@ -53,44 +64,60 @@ const useStyles = makeStyles({
   },
 });
 
-const Home = () => {
+const Home: FC<AlertProps> = ({ successMessage, error, resetMessage }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   return (
-    <Box className={classes.root}>
-      <Box>
-        <img className={classes.logoIcon} src={donationLogo} alt="logo" />
+    <>
+      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={successMessage}
+        type="success"
+      />
+      <Box className={classes.root}>
+        <Box>
+          <img className={classes.logoIcon} src={donationLogo} alt="logo" />
+        </Box>
+        <Card className={classes.mainCard}>
+          <Box className={classes.box}>
+            <Card>
+              <CardContent onClick={() => navigate("/login")}>
+                <img className={classes.icons} src={donationIcon} alt="Donor" />
+                <Typography className={classes.donorTypo} variant="h4">
+                  Donor
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent onClick={() => navigate("/login")}>
+                <img
+                  className={classes.icons}
+                  src={orphanageLogo}
+                  alt="Receiver"
+                />
+                <Typography className={classes.recieverTypo} variant="h4">
+                  Receiver
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+          <Box className={classes.signupBox}>
+            <Button variant="contained" onClick={() => navigate("/register")}>
+              Sign up
+            </Button>
+          </Box>
+        </Card>
       </Box>
-      <Card className={classes.mainCard}>
-        <Box className={classes.box}>
-          <Card>
-            <CardContent onClick={() => navigate("/login")}>
-              <img className={classes.icons} src={donationIcon} alt="Donor" />
-              <Typography className={classes.donorTypo} variant="h4">
-                Donor
-              </Typography>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent onClick={() => navigate("/login")}>
-              <img
-                className={classes.icons}
-                src={orphanageLogo}
-                alt="Receiver"
-              />
-              <Typography className={classes.recieverTypo} variant="h4">
-                Receiver
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box className={classes.signupBox}>
-          <Button variant="contained" onClick={() => navigate("/register")}>
-            Sign up
-          </Button>
-        </Box>
-      </Card>
-    </Box>
+    </>
   );
 };
-export default Home;
+const mapStateToProps = (state: RootState) => ({
+  successMessage: successMessageSelector(state),
+  error: errorMessageSelector(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  resetMessage: () => dispatch(usersActions.resetMessage()),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

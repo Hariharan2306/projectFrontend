@@ -2,7 +2,7 @@ import { FC, useEffect, useRef } from "react";
 import { Alert, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import isEmpty from "lodash/isEmpty";
-import type { AlertProps } from "../types/common";
+import type { TimedAlertProps } from "../types/common";
 
 const useStyles = makeStyles({
   root: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     },
   },
 });
-const TimedAlert: FC<AlertProps> = ({ resetMessage, message, type }) => {
+const TimedAlert: FC<TimedAlertProps> = ({ resetMessage, message, type }) => {
   const classes = useStyles();
   const alertRef = useRef<HTMLDivElement>(null);
 

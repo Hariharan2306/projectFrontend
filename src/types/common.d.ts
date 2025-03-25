@@ -18,24 +18,23 @@ export type LoginUserSagaProps = {
   loginDetails: LoginDetails;
 };
 
-export type RegisterProps = {
-  registerUser: (user: UserData) => void;
+export interface AlertProps {
   error: string;
   successMessage: string;
   resetMessage: VoidFunction;
-};
+}
+export interface RegisterProps extends AlertProps {
+  registerUser: (user: UserData) => void;
+}
 
 export type LoginDetails = { userMail: string; password: string };
 
-export type LoginProps = {
+export interface LoginProps extends AlertProps {
   loginUser: (loginDetails: LoginDetails) => void;
-  error: string;
-  successMessage: string;
-  resetMessage: VoidFunction;
   userCred: { userName: string; email: string };
-};
+}
 
-export type AlertProps = {
+export type TimedAlertProps = {
   resetMessage: VoidFunction;
   message: string;
   type: "error" | "success";
