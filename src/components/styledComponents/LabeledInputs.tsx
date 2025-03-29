@@ -15,6 +15,7 @@ const StyledInputBox = styled(Box)(() => ({
   flexDirection: "column",
   margin: "1%",
   width: "20vw",
+  "& .MuiOutlinedInput-input": { padding: "12px 14px" },
 }));
 
 const LabeledInputs: FC<Props> = ({

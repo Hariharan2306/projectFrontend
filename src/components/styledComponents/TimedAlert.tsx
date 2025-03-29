@@ -2,7 +2,7 @@ import { FC, useEffect, useRef } from "react";
 import { Alert, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import isEmpty from "lodash/isEmpty";
-import type { TimedAlertProps } from "../types/common";
+import type { TimedAlertProps } from "../../types/common";
 
 const useStyles = makeStyles({
   root: {

@@ -1,45 +1,20 @@
-import axios from "axios";
+import { api } from "../apis/helper";
 import type { LoginDetails, UserData } from "../types/common";
 
-const api = axios.create({ baseURL: "http://localhost:3002" });
-
-export const updateUserPasswordService = async ({
-  userMail,
-  password,
-}: LoginDetails) => {
+export const updateUserPasswordService = async (loginDetails: LoginDetails) => {
   const url = "/users/update-password";
-  const response = await api.put(url, { userMail, password });
+  const response = await api.put(url, loginDetails);
   return response;
 };
 
 export const createUserService = async (userData: UserData) => {
-  const {
-    userName,
-    password,
-    mobile,
-    location,
-    email,
-    reciever,
-    registeredId,
-  } = userData as UserData;
   const url = "/users/create-user";
-  const response = await api.post(url, {
-    userName,
-    password,
-    mobile,
-    location,
-    email,
-    reciever,
-    registeredId,
-  });
+  const response = await api.post(url, userData);
   return response;
 };
 
-export const loginUserService = async ({
-  userMail,
-  password,
-}: LoginDetails) => {
+export const loginUserService = async (loginDetails: LoginDetails) => {
   const url = `/users/login-user`;
-  const response = await api.post(url, { userMail, password });
+  const response = await api.post(url, loginDetails);
   return response;
 };

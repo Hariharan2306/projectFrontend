@@ -1,9 +1,7 @@
 import { UserTypes } from "../actions/actionTypes";
+import type { CommonReducerType } from "../types/common";
 
 type userReducerTypes = {
-  successMessage: string;
-  error: string;
-  type?: string;
   data: {
     userName: string;
     email: string;
@@ -13,15 +11,16 @@ type userReducerTypes = {
   };
 };
 
-const initialReducer: userReducerTypes = {
+const initialReducer: userReducerTypes & CommonReducerType = {
   successMessage: "",
   error: "",
+  type: "",
   data: {} as userReducerTypes["data"],
 };
 
 export const userReducer = (
   state = initialReducer,
-  action: userReducerTypes
+  action: userReducerTypes & CommonReducerType
 ) => {
   switch (action.type) {
     case UserTypes.SUCCESS_CREATE_USER_DETAILS:

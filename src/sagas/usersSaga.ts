@@ -1,15 +1,14 @@
-import { SagaIterator } from "redux-saga";
+import type { SagaIterator } from "redux-saga";
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import get from "lodash/get";
 import usersActions from "../actions/usersActions";
 import { createUserService, loginUserService } from "../services/userServices";
 import { UserTypes } from "../actions/actionTypes";
-import type {
-  LoginUserSagaProps,
-  RegisterUserSagaProps,
-} from "../types/common";
+import type { LoginDetails, SagaProps, UserData } from "../types/common";
 
-function* registerUser({ userData }: RegisterUserSagaProps): SagaIterator {
+function* registerUser({
+  userData,
+}: { userData: UserData } & SagaProps): SagaIterator {
   try {
     yield put(usersActions.requestRegisterUser());
     const response = yield call(() => createUserService(userData));
@@ -21,7 +20,9 @@ function* registerUser({ userData }: RegisterUserSagaProps): SagaIterator {
   }
 }
 
-function* loginUser({ loginDetails }: LoginUserSagaProps): SagaIterator {
+function* loginUser({
+  loginDetails,
+}: { loginDetails: LoginDetails } & SagaProps): SagaIterator {
   try {
     yield put(usersActions.requestLoginUser());
     const response = yield call(() => loginUserService(loginDetails));

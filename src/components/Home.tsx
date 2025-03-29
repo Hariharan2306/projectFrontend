@@ -7,7 +7,7 @@ import donationIcon from "../assets/donationIcon.svg";
 import orphanageLogo from "../assets/orphanageLogo.svg";
 import donationLogo from "../assets/donationLogo.svg";
 import { useNavigate } from "react-router-dom";
-import TimedAlert from "./TimedAlert";
+import TimedAlert from "./styledComponents/TimedAlert";
 import { RootState } from "../apis/rootReducer";
 import {
   errorMessageSelector,
@@ -82,7 +82,11 @@ const Home: FC<AlertProps> = ({ successMessage, error, resetMessage }) => {
         <Card className={classes.mainCard}>
           <Box className={classes.box}>
             <Card>
-              <CardContent onClick={() => navigate("/login")}>
+              <CardContent
+                onClick={() =>
+                  navigate("/login", { state: { isReciever: false } })
+                }
+              >
                 <img className={classes.icons} src={donationIcon} alt="Donor" />
                 <Typography className={classes.donorTypo} variant="h4">
                   Donor
@@ -90,7 +94,11 @@ const Home: FC<AlertProps> = ({ successMessage, error, resetMessage }) => {
               </CardContent>
             </Card>
             <Card>
-              <CardContent onClick={() => navigate("/login")}>
+              <CardContent
+                onClick={() =>
+                  navigate("/login", { state: { isReciever: true } })
+                }
+              >
                 <img
                   className={classes.icons}
                   src={orphanageLogo}

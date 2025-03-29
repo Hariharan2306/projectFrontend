@@ -1,12 +1,24 @@
-import { FC } from "react";
-import { IconButton } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import raiseRequestGif from "../assets/requestGif.gif";
+import { FC, useEffect, useState } from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
+import { Box, IconButton } from "@mui/material";
 import get from "lodash/get";
-import type { DonationData } from "../types/donations";
-import StyledDatagrid from "./StyledDatagrid";
-
-const useStyles = makeStyles({});
+import raiseRequestGif from "../assets/requestGif.gif";
+import StyledDatagrid from "./styledComponents/StyledDatagrid";
+import LabeledInputs from "./styledComponents/LabeledInputs";
+import { RootState } from "../apis/rootReducer";
+import {
+  donationDataSelector,
+  errorMessageSelector,
+  successMessageSelector,
+} from "../selectors/donationsSelector";
+import donationActions from "../actions/donationActions";
+import TimedAlert from "./styledComponents/TimedAlert";
+import type {
+  ApiDonationData,
+  DonationData,
+  DonationsProps,
+} from "../types/common";
 
 const columns = [
   {
@@ -79,13 +91,87 @@ const columns = [
   },
 ];
 
-const Donations: FC = () => {
-  const classes = useStyles();
+const Donations: FC<DonationsProps> = ({
+  createDonation,
+  successMessage,
+  error,
+  resetMessage,
+  fetchAllDonations,
+  donationData,
+}) => {
+  const [quantity, setQuantity] = useState(0);
+  const [location, setLocation] = useState("");
+  const [time, setTime] = useState("");
+  const [productType, setProductType] = useState("");
+
+  useEffect(() => {
+    fetchAllDonations();
+  }, []);
+
+  const renderDialogContent = () => (
+    <>
+      <Box>
+        <LabeledInputs
+          label="Quantity"
+          placeholder="Enter Quantity"
+          type="number"
+          value={quantity}
+          onChange={(value) => setQuantity(Number(value))}
+        />
+        <LabeledInputs
+          label="Location"
+          placeholder="Enter location"
+          value={location}
+          onChange={(value) => setLocation(value)}
+        />
+      </Box>
+      <Box>
+        <LabeledInputs
+          label="Time Availability"
+          placeholder="Time"
+          value={time}
+          onChange={(value) => setTime(value)}
+        />
+        <LabeledInputs
+          label="Product Type"
+          placeholder="Product Type"
+          value={productType}
+          onChange={(value) => setProductType(value)}
+        />
+      </Box>
+    </>
+  );
 
   return (
     <>
-      <StyledDatagrid columns={columns} addRequests />
+      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={successMessage}
+        type="success"
+      />
+      <StyledDatagrid
+        columns={columns}
+        addRequests
+        dialogContent={renderDialogContent}
+        dialogHeader="Add Donation"
+        onSubmit={() =>
+          createDonation({ quantity, location, time, productType })
+        }
+      />
     </>
   );
 };
-export default Donations;
+const mapStateToProps = (state: RootState) => ({
+  successMessage: successMessageSelector(state),
+  error: errorMessageSelector(state),
+  donationData: donationDataSelector(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  createDonation: (donationData: ApiDonationData) =>
+    dispatch(donationActions.addDonation(donationData)),
+  fetchAllDonations: () => dispatch(donationActions.fetchDonationData()),
+  resetMessage: () => dispatch(donationActions.resetMessage()),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Donations);

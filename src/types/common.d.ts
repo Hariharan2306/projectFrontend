@@ -8,16 +8,6 @@ export type UserData = {
   registeredId: string;
 };
 
-export type RegisterUserSagaProps = {
-  type: string;
-  userData: UserData;
-};
-
-export type LoginUserSagaProps = {
-  type: string;
-  loginDetails: LoginDetails;
-};
-
 export interface AlertProps {
   error: string;
   successMessage: string;
@@ -27,7 +17,11 @@ export interface RegisterProps extends AlertProps {
   registerUser: (user: UserData) => void;
 }
 
-export type LoginDetails = { userMail: string; password: string };
+export type LoginDetails = {
+  userMail: string;
+  password: string;
+  isReciever: boolean;
+};
 
 export interface LoginProps extends AlertProps {
   loginUser: (loginDetails: LoginDetails) => void;
@@ -39,3 +33,42 @@ export type TimedAlertProps = {
   message: string;
   type: "error" | "success";
 };
+
+export type ApiDonationData = {
+  quantity: number;
+  location: string;
+  time: string;
+  productType: string;
+};
+
+export type SagaProps = { type: string };
+
+export type LoggedUserData = {
+  userName: string;
+  email: string;
+  userType: "Reciever" | "Donor";
+};
+
+export type DonationData = {
+  row: {
+    donationId: string;
+    donatingUser: string;
+    quantity: number;
+    time: Date;
+    type: string;
+    isAvailable: boolean;
+  };
+};
+
+export type CommonReducerType = {
+  successMessage: string;
+  errorMessage?: string;
+  error?: string;
+  type: string;
+};
+
+export interface DonationsProps extends AlertProps {
+  createDonation: (donationData: ApiDonationData) => void;
+  fetchAllDonations: VoidFunction;
+  donationData: DonationData["row"][];
+}

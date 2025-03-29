@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Button, Card, TextField, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import isEmpty from "lodash/isEmpty";
@@ -9,7 +9,7 @@ import donationLogo from "../assets/donationLogo.svg";
 import usersActions from "../actions/usersActions";
 import { RootState } from "../apis/rootReducer";
 import type { LoginDetails, LoginProps } from "../types/common";
-import TimedAlert from "./TimedAlert";
+import TimedAlert from "./styledComponents/TimedAlert";
 import {
   errorMessageSelector,
   successMessageSelector,
@@ -49,6 +49,8 @@ const Login: FC<LoginProps> = ({
 }: LoginProps) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isReciever } = location.state || {};
   const formDataRef = useRef({ userMail: "", password: "" });
 
   const [userMail, setUserMail] = useState("");
@@ -58,7 +60,13 @@ const Login: FC<LoginProps> = ({
 
   useEffect(() => {
     if (!isEmpty(userCred))
-      sessionStorage.setItem("loggedUserData", JSON.stringify(userCred));
+      sessionStorage.setItem(
+        "loggedUserData",
+        JSON.stringify({
+          ...userCred,
+          userType: isReciever ? "Reciever" : "Donor",
+        })
+      );
     if (!isEmpty(successMessage)) {
       resetMessage();
       navigate("/dashboard");
@@ -67,7 +75,7 @@ const Login: FC<LoginProps> = ({
 
   useEffect(() => {
     const handleEnter = (e: KeyboardEvent) => {
-      if (e.key === "Enter") loginUser(formDataRef.current);
+      if (e.key === "Enter") loginUser({ ...formDataRef.current, isReciever });
     };
     document.addEventListener("keydown", handleEnter);
     return () => document.removeEventListener("keydown", handleEnter);
@@ -115,7 +123,7 @@ const Login: FC<LoginProps> = ({
         <Button
           className={classes.equalMargin}
           variant="contained"
-          onClick={() => loginUser({ userMail, password })}
+          onClick={() => loginUser({ userMail, password, isReciever })}
         >
           Log in
         </Button>

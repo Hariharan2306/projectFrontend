@@ -16,14 +16,14 @@ import sliderImg1 from "../assets/sliderImg1.png";
 import donationSliderImg2 from "../assets/donationSliderImg2.png";
 import usersActions from "../actions/usersActions";
 import type { RegisterProps, UserData } from "../types/common";
-import TimedAlert from "./TimedAlert";
+import TimedAlert from "./styledComponents/TimedAlert";
 import type { RootState } from "../apis/rootReducer";
 import {
   errorMessageSelector,
   successMessageSelector,
 } from "../selectors/userSelector";
 import { useNavigate } from "react-router-dom";
-import LabeledInputs from "./LabeledInputs";
+import LabeledInputs from "./styledComponents/LabeledInputs";
 
 const useStyles = makeStyles({
   logoIcon: { width: "60px", margin: "1% 2% 1% 2%" },

@@ -1,8 +1,8 @@
 import get from "lodash/get";
-import type { DonationData } from "../types/donations";
-import StyledDatagrid from "./StyledDatagrid";
 import { IconButton } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+import StyledDatagrid from "./styledComponents/StyledDatagrid";
+import type { DonationData } from "../types/common";
 
 const columns = [
   {

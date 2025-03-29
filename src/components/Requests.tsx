@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { IconButton } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import StyledDatagrid from "./StyledDatagrid";
-import type { DonationData } from "../types/donations";
-import { get } from "lodash";
+import get from "lodash/get";
+import StyledDatagrid from "./styledComponents/StyledDatagrid";
+import type { DonationData } from "../types/common";
 
 const columns = [
   {
@@ -70,7 +70,7 @@ const columns = [
 const Requests: FC = () => {
   return (
     <>
-      <StyledDatagrid columns={columns} />
+      <StyledDatagrid columns={columns} onSubmit={() => {}} />
     </>
   );
 };

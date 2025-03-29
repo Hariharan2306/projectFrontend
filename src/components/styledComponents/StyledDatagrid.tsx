@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, ReactNode, useState } from "react";
 import {
   Box,
   Button,
@@ -12,9 +12,9 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
 import { SearchRounded } from "@mui/icons-material";
 import { debounce } from "lodash";
+import AddDonationDialog from "./StyledDialog";
 import DatePicker from "./Datepicker";
-import { DONATION_DATE_OPTIONS } from "../config/constants";
-import AddDonationDialog from "./AddDonationDialog";
+import { DONATION_DATE_OPTIONS } from "../../config/constants";
 
 const useStyles = makeStyles({
   body: {
@@ -44,9 +44,21 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = { columns: GridColDef[]; addRequests?: boolean };
+type Props = {
+  columns: GridColDef[];
+  addRequests?: boolean;
+  dialogContent?: () => ReactNode;
+  dialogHeader?: string;
+  onSubmit?: () => void;
+};
 
-const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
+const StyledDatagrid: FC<Props> = ({
+  columns,
+  addRequests = false,
+  dialogContent,
+  dialogHeader = "",
+  onSubmit,
+}: Props) => {
   const classes = useStyles({ addRequests });
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,10 +71,15 @@ const StyledDatagrid: FC<Props> = ({ columns, addRequests = false }: Props) => {
   return (
     <>
       <Card className={classes.body}>
-        <AddDonationDialog
-          dialogOpen={dialogOpen}
-          setDialogOpen={setDialogOpen}
-        />
+        {addRequests && (
+          <AddDonationDialog
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            dialogContent={dialogContent}
+            dialogHeader={dialogHeader}
+            onSubmit={onSubmit}
+          />
+        )}
         <Box className={classes.toolBar}>
           <DatePicker
             options={DONATION_DATE_OPTIONS}

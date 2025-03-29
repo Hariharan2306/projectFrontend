@@ -34,9 +34,7 @@ const failureLoginUser = (error: string) => ({
   error,
 });
 
-const resetMessage = () => ({
-  type: UserTypes.RESET_MESSAGE,
-});
+const resetMessage = () => ({ type: UserTypes.RESET_MESSAGE });
 
 const usersActions = {
   registerUser,

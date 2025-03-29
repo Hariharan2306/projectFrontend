@@ -14,6 +14,7 @@ import {
 import Face6Icon from "@mui/icons-material/Face6";
 import { headerTabs } from "../config/constants";
 import donationLogo from "../assets/donationLogo.svg";
+import type { LoggedUserData } from "../types/common";
 
 const useStyles = makeStyles({
   body: { display: "flex" },
@@ -40,7 +41,11 @@ const Header: FC = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const currentUrl = window.location.pathname;
-  const { userName, email: userMail } = JSON.parse(
+  const {
+    userName,
+    email: userMail,
+    userType,
+  }: LoggedUserData = JSON.parse(
     sessionStorage.getItem("loggedUserData") || "{}"
   );
 
@@ -92,6 +97,7 @@ const Header: FC = () => {
           <MenuItem key="userDetails" className={classes.userProfile}>
             <Typography>{userName}</Typography>
             <Typography>{userMail}</Typography>
+            <Typography>{userType}</Typography>
           </MenuItem>
           <Divider variant="middle" />
           <MenuItem key="userDetails" onClick={() => navigate("/edit")}>
