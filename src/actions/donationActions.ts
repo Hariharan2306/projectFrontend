@@ -1,5 +1,5 @@
 import { DonationTypes } from "./actionTypes";
-import type { ApiDonationData } from "../types/common";
+import type { ApiDonationData, RequestData } from "../types/common";
 
 const addDonation = (donationData: ApiDonationData) => ({
   type: DonationTypes.ADD_DONATION,
@@ -19,7 +19,7 @@ const fetchDonationData = () => ({ type: DonationTypes.FETCH_DONATION_DATA });
 const requestFetchDonationData = () => ({
   type: DonationTypes.REQUEST_FETCH_DONATION_DATA,
 });
-const successFetchDonationData = (donationData: any) => ({
+const successFetchDonationData = (donationData: RequestData) => ({
   type: DonationTypes.SUCCESS_FETCH_DONATION_DATA,
   donationData,
 });

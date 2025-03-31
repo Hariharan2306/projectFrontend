@@ -5,9 +5,9 @@ import { styled } from "@mui/material/styles";
 type Props = {
   label: string;
   placeholder: string;
-  value: string | number;
+  value: string | number | Date;
   onChange: (e: string) => void;
-  type?: "number" | "password" | "mobile" | "email" | "";
+  type?: "number" | "password" | "mobile" | "email" | "datetime-local" | "";
 };
 
 const StyledInputBox = styled(Box)(() => ({
@@ -15,7 +15,7 @@ const StyledInputBox = styled(Box)(() => ({
   flexDirection: "column",
   margin: "1%",
   width: "20vw",
-  "& .MuiOutlinedInput-input": { padding: "12px 14px" },
+  "& .MuiOutlinedInput-input": { padding: "12px 14px", width: 200 },
 }));
 
 const LabeledInputs: FC<Props> = ({

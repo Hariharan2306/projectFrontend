@@ -1,8 +1,20 @@
-import get from "lodash/get";
+import { FC, useEffect } from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 import { IconButton } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+import get from "lodash/get";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
-import type { DonationData } from "../types/common";
+import TimedAlert from "./styledComponents/TimedAlert";
+import { RootState } from "../apis/rootReducer";
+import {
+  approvalsSelector,
+  errorMessageSelector,
+  requesterDetailSelector,
+  successMessageSelector,
+} from "../selectors/approvalSelectors";
+import type { ApprovalProps, DonationData } from "../types/common";
+import approvalActions from "../actions/approvalActions";
 
 const columns = [
   {
@@ -15,11 +27,11 @@ const columns = [
     flex: 1,
   },
   {
-    id: "donatingUser",
-    field: "donatingUser",
+    id: "requestingUser",
+    field: "requestingUser",
     numeric: false,
     disablePadding: false,
-    headerName: "Donating User",
+    headerName: "Requesting User",
     disableColumnMenu: true,
     flex: 1,
   },
@@ -66,12 +78,45 @@ const columns = [
   },
 ];
 
-const Approvals = () => {
+const Approvals: FC<ApprovalProps> = ({
+  resetMessage,
+  error,
+  successMessage,
+  approvalRequests,
+  requesterDetail,
+  fetchApprovals,
+  fetchRequester,
+  approveDonationRequests,
+}) => {
+  useEffect(() => {
+    fetchApprovals();
+  }, []);
+
   return (
     <>
+      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={successMessage}
+        type="success"
+      />
       <StyledDatagrid columns={columns} />
     </>
   );
 };
 
-export default Approvals;
+const mapStateToProps = (state: RootState) => ({
+  successMessage: successMessageSelector(state),
+  error: errorMessageSelector(state),
+  approvalRequests: approvalsSelector(state),
+  requesterDetail: requesterDetailSelector(state),
+});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  resetMessage: () => dispatch(approvalActions.resetMessage()),
+  fetchApprovals: () => dispatch(approvalActions.fetchApprovals()),
+  fetchRequester: (reqId: number) =>
+    dispatch(approvalActions.fetchRequesterDetails(reqId)),
+  approveDonationRequests: (reqId: number) =>
+    dispatch(approvalActions.approveDonationRequests(reqId)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Approvals);

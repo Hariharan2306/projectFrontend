@@ -1,9 +1,9 @@
 import type { SagaIterator } from "redux-saga";
 import { all, call, put, takeLatest } from "redux-saga/effects";
-import get from "lodash/get";
 import usersActions from "../actions/usersActions";
 import { createUserService, loginUserService } from "../services/userServices";
 import { UserTypes } from "../actions/actionTypes";
+import { parseError } from "./sagaHelper";
 import type { LoginDetails, SagaProps, UserData } from "../types/common";
 
 function* registerUser({
@@ -14,9 +14,7 @@ function* registerUser({
     const response = yield call(() => createUserService(userData));
     yield put(usersActions.successRegisterUser(response.data.message));
   } catch (error) {
-    yield put(
-      usersActions.failureRegisterUser(get(error, "response.data.error", ""))
-    );
+    yield put(usersActions.failureRegisterUser(parseError(error as object)));
   }
 }
 
@@ -28,9 +26,7 @@ function* loginUser({
     const response = yield call(() => loginUserService(loginDetails));
     yield put(usersActions.successLoginUser(response.data));
   } catch (error) {
-    yield put(
-      usersActions.failureLoginUser(get(error, "response.data.error", ""))
-    );
+    yield put(usersActions.failureLoginUser(parseError(error as object)));
   }
 }
 

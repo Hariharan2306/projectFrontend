@@ -37,7 +37,7 @@ export type TimedAlertProps = {
 export type ApiDonationData = {
   quantity: number;
   location: string;
-  time: string;
+  time: Date;
   productType: string;
 };
 
@@ -71,4 +71,53 @@ export interface DonationsProps extends AlertProps {
   createDonation: (donationData: ApiDonationData) => void;
   fetchAllDonations: VoidFunction;
   donationData: DonationData["row"][];
+  requestDonation: (requestData: RequestData) => void;
+}
+
+// used while request is created
+export interface RequestData {
+  donationId: number;
+}
+
+// used while request is fetched
+export interface AllRequestData {
+  requestId: number;
+  donatingUser: string;
+  quantity: number;
+  time: Date;
+  productType: string;
+}
+
+export interface RequestsProps extends AlertProps {
+  fetchRequests: VoidFunction;
+  allRequestData: AllRequestData[];
+  withdrawRequests: (reqId: number) => void;
+}
+
+export interface SuccessFetchRequestAction {
+  successMessage: string;
+  requesterData: {
+    userName: string;
+    email: string;
+    location: string;
+  };
+}
+
+export interface ApprovalSuccessAction {
+  successMessage: string;
+  approvalData: {
+    requestId: number;
+    requestingUser: string;
+    quantity: number;
+    time: Date;
+    type: string;
+  };
+}
+
+export interface ApprovalProps extends AlertProps {
+  fetchApprovals: VoidFunction;
+  fetchRequester: (requestId: number) => void;
+  approveDonationRequests: (reqId: number) => void;
+  approvalRequests: ApprovalSuccessAction["approvalData"][];
+  requesterDetail: SuccessFetchRequestAction["requesterData"];
 }

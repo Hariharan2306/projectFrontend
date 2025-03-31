@@ -9,6 +9,7 @@ export const addDonationService = async (donationData: ApiDonationData) => {
 
 export const fetchDonationService = async () => {
   const url = "/donations/fetchDonations";
+  // TODO send it via token api
   const loggedUserData: LoggedUserData = JSON.parse(
     sessionStorage.getItem("loggedUserData") || "{}"
   );

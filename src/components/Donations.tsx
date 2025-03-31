@@ -18,7 +18,9 @@ import type {
   ApiDonationData,
   DonationData,
   DonationsProps,
+  RequestData,
 } from "../types/common";
+import requestActions from "../actions/requestActions";
 
 const columns = [
   {
@@ -98,10 +100,11 @@ const Donations: FC<DonationsProps> = ({
   resetMessage,
   fetchAllDonations,
   donationData,
+  requestDonation,
 }) => {
   const [quantity, setQuantity] = useState(0);
   const [location, setLocation] = useState("");
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState<Date>(new Date());
   const [productType, setProductType] = useState("");
 
   useEffect(() => {
@@ -130,7 +133,7 @@ const Donations: FC<DonationsProps> = ({
           label="Time Availability"
           placeholder="Time"
           value={time}
-          onChange={(value) => setTime(value)}
+          onChange={(value) => setTime(new Date(value))}
         />
         <LabeledInputs
           label="Product Type"
@@ -173,5 +176,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(donationActions.addDonation(donationData)),
   fetchAllDonations: () => dispatch(donationActions.fetchDonationData()),
   resetMessage: () => dispatch(donationActions.resetMessage()),
+  requestDonation: (requestData: RequestData) =>
+    dispatch(requestActions.createDonation(requestData)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Donations);

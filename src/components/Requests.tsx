@@ -1,9 +1,19 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
+import { Dispatch } from "redux";
+import { connect } from "react-redux";
 import { IconButton } from "@mui/material";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import get from "lodash/get";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
-import type { DonationData } from "../types/common";
+import { RootState } from "../apis/rootReducer";
+import {
+  donationRequestsDataSelector,
+  errorMessageSelector,
+  successMessageSelector,
+} from "../selectors/donationRequestsSelector";
+import requestActions from "../actions/requestActions";
+import TimedAlert from "./styledComponents/TimedAlert";
+import type { DonationData, RequestsProps } from "../types/common";
 
 const columns = [
   {
@@ -67,12 +77,41 @@ const columns = [
   },
 ];
 
-const Requests: FC = () => {
+const Requests: FC<RequestsProps> = ({
+  fetchRequests,
+  resetMessage,
+  successMessage,
+  error,
+  allRequestData,
+  withdrawRequests,
+}) => {
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
   return (
     <>
+      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={successMessage}
+        type="success"
+      />
       <StyledDatagrid columns={columns} onSubmit={() => {}} />
     </>
   );
 };
 
-export default Requests;
+const mapStateToProps = (state: RootState) => ({
+  successMessage: successMessageSelector(state),
+  error: errorMessageSelector(state),
+  allRequestData: donationRequestsDataSelector(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  resetMessage: () => dispatch(requestActions.resetMessage()),
+  fetchRequests: () => dispatch(requestActions.fetchDonationRequests()),
+  withdrawRequests: (reqId: number) =>
+    dispatch(requestActions.withdrawDonationRequest(reqId)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Requests);

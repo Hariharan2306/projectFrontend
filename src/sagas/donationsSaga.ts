@@ -1,13 +1,13 @@
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import type { SagaIterator } from "redux-saga";
-import get from "lodash/get";
-import type { ApiDonationData, SagaProps } from "../types/common";
 import donationActions from "../actions/donationActions";
 import { DonationTypes } from "../actions/actionTypes";
 import {
   addDonationService,
   fetchDonationService,
 } from "../services/donationService";
+import { parseError } from "./sagaHelper";
+import type { ApiDonationData, SagaProps } from "../types/common";
 
 function* addDonation({
   donationData,
@@ -17,9 +17,7 @@ function* addDonation({
     const response = yield call(() => addDonationService(donationData));
     yield put(donationActions.successAddDonation(response.data.message));
   } catch (error) {
-    yield put(
-      donationActions.failureAddDonation(get(error, "response.data.error", ""))
-    );
+    yield put(donationActions.failureAddDonation(parseError(error as object)));
   }
 }
 
@@ -30,9 +28,7 @@ function* fetchDonationData(): SagaIterator {
     yield put(donationActions.successAddDonation(response.data.donationData));
   } catch (error) {
     yield put(
-      donationActions.failureFetchDonationData(
-        get(error, "response.data.error", "")
-      )
+      donationActions.failureFetchDonationData(parseError(error as object))
     );
   }
 }
