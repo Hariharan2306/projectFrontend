@@ -34,7 +34,7 @@ const columns = [
   },
   {
     id: "donatingUser",
-    field: "donatingUser",
+    field: "donor",
     numeric: false,
     disablePadding: false,
     headerName: "Donating User",
@@ -70,7 +70,7 @@ const columns = [
   },
   {
     id: "type",
-    field: "type",
+    field: "productType",
     numeric: false,
     disablePadding: false,
     headerName: "Type of Product",
@@ -109,7 +109,7 @@ const Donations: FC<DonationsProps> = ({
 
   useEffect(() => {
     fetchAllDonations();
-  }, []);
+  }, [fetchAllDonations]);
 
   const renderDialogContent = () => (
     <>
@@ -145,6 +145,19 @@ const Donations: FC<DonationsProps> = ({
     </>
   );
 
+  const dialogData = {
+    dialogContent: renderDialogContent,
+    dialogHeader: "Add Donation",
+    onSubmit: () =>
+      createDonation({
+        quantity,
+        location,
+        time,
+        productType,
+        onSuccess: fetchAllDonations,
+      }),
+  };
+
   return (
     <>
       <TimedAlert resetMessage={resetMessage} message={error} type="error" />
@@ -156,11 +169,9 @@ const Donations: FC<DonationsProps> = ({
       <StyledDatagrid
         columns={columns}
         addRequests
-        dialogContent={renderDialogContent}
-        dialogHeader="Add Donation"
-        onSubmit={() =>
-          createDonation({ quantity, location, time, productType })
-        }
+        dialogData={dialogData}
+        rows={donationData as []}
+        onFetch={fetchAllDonations}
       />
     </>
   );
@@ -174,7 +185,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   createDonation: (donationData: ApiDonationData) =>
     dispatch(donationActions.addDonation(donationData)),
-  fetchAllDonations: () => dispatch(donationActions.fetchDonationData()),
+  fetchAllDonations: (search?: string) =>
+    dispatch(donationActions.fetchDonationData(search)),
   resetMessage: () => dispatch(donationActions.resetMessage()),
   requestDonation: (requestData: RequestData) =>
     dispatch(requestActions.createDonation(requestData)),

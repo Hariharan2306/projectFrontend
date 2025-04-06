@@ -1,5 +1,5 @@
 import { DonationTypes } from "./actionTypes";
-import type { ApiDonationData, RequestData } from "../types/common";
+import type { ApiDonationData, DonationData } from "../types/common";
 
 const addDonation = (donationData: ApiDonationData) => ({
   type: DonationTypes.ADD_DONATION,
@@ -15,13 +15,20 @@ const failureAddDonation = (errorMessage: string) => ({
   errorMessage,
 });
 
-const fetchDonationData = () => ({ type: DonationTypes.FETCH_DONATION_DATA });
+const fetchDonationData = (search?: string) => ({
+  type: DonationTypes.FETCH_DONATION_DATA,
+  search,
+});
 const requestFetchDonationData = () => ({
   type: DonationTypes.REQUEST_FETCH_DONATION_DATA,
 });
-const successFetchDonationData = (donationData: RequestData) => ({
+const successFetchDonationData = (
+  donationData: DonationData["row"],
+  successMessage: string
+) => ({
   type: DonationTypes.SUCCESS_FETCH_DONATION_DATA,
   donationData,
+  successMessage,
 });
 const failureFetchDonationData = (errorMessage: string) => ({
   type: DonationTypes.FAILURE_FETCH_DONATION_DATA,

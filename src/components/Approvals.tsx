@@ -100,7 +100,11 @@ const Approvals: FC<ApprovalProps> = ({
         message={successMessage}
         type="success"
       />
-      <StyledDatagrid columns={columns} />
+      <StyledDatagrid
+        columns={columns}
+        rows={approvalRequests as []}
+        onFetch={fetchApprovals}
+      />
     </>
   );
 };

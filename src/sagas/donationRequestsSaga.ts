@@ -9,7 +9,7 @@ function* requestDonation({
   requestData,
 }: { requestData: RequestData } & SagaProps): SagaIterator {
   try {
-    yield put(requestActions.requestCreateDonation);
+    yield put(requestActions.requestCreateDonation());
     const response = yield call(() => {});
     yield put(requestActions.successCreateDonation(response.data.message));
   } catch (e) {
@@ -19,7 +19,7 @@ function* requestDonation({
 
 function* fetchRequestDonation(): SagaIterator {
   try {
-    yield put(requestActions.requestFetchDonationRequests);
+    yield put(requestActions.requestFetchDonationRequests());
     const response = yield call(() => {});
     yield put(requestActions.successFetchDonationRequests(response.data));
   } catch (e) {
@@ -33,7 +33,7 @@ function* withdrawDonation({
   requestId,
 }: { requestId: number } & SagaProps): SagaIterator {
   try {
-    yield put(requestActions.requestWithdrawDonationRequest);
+    yield put(requestActions.requestWithdrawDonationRequest());
     const response = yield call(() => {});
     yield put(
       requestActions.successWithdrawDonationRequest(response.data.message)

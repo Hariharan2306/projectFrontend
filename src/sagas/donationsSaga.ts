@@ -13,19 +13,27 @@ function* addDonation({
   donationData,
 }: { donationData: ApiDonationData } & SagaProps): SagaIterator {
   try {
-    yield put(donationActions.requestAddDonation);
+    yield put(donationActions.requestAddDonation());
     const response = yield call(() => addDonationService(donationData));
+    if (donationData.onSuccess) yield call(donationData.onSuccess);
     yield put(donationActions.successAddDonation(response.data.message));
   } catch (error) {
     yield put(donationActions.failureAddDonation(parseError(error as object)));
   }
 }
 
-function* fetchDonationData(): SagaIterator {
+function* fetchDonationData({
+  search,
+}: { search?: string } & SagaProps): SagaIterator {
   try {
-    yield put(donationActions.requestFetchDonationData);
-    const response = yield call(() => fetchDonationService());
-    yield put(donationActions.successAddDonation(response.data.donationData));
+    yield put(donationActions.requestFetchDonationData());
+    const response = yield call(() => fetchDonationService(search));
+    yield put(
+      donationActions.successFetchDonationData(
+        response.data.donationData,
+        response.data.successMessage
+      )
+    );
   } catch (error) {
     yield put(
       donationActions.failureFetchDonationData(parseError(error as object))

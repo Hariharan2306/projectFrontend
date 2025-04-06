@@ -97,7 +97,11 @@ const Requests: FC<RequestsProps> = ({
         message={successMessage}
         type="success"
       />
-      <StyledDatagrid columns={columns} onSubmit={() => {}} />
+      <StyledDatagrid
+        columns={columns}
+        rows={allRequestData as []}
+        onFetch={fetchRequests}
+      />
     </>
   );
 };

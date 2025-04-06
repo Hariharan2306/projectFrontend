@@ -7,7 +7,7 @@ import { parseError } from "./sagaHelper";
 
 function* fetchApprovals(): SagaIterator {
   try {
-    yield put(approvalActions.requestFetchApprovals);
+    yield put(approvalActions.requestFetchApprovals());
     const response = yield call(() => {});
     yield put(approvalActions.successFetchApprovals(response.data));
   } catch (error) {
@@ -21,7 +21,7 @@ function* fetchRequesterDetails({
   reqId,
 }: { reqId: number } & SagaProps): SagaIterator {
   try {
-    yield put(approvalActions.requestFetchRequesterDetails);
+    yield put(approvalActions.requestFetchRequesterDetails());
     const response = yield call(() => {});
     yield put(approvalActions.successFetchRequesterDetails(response.data));
   } catch (error) {
@@ -35,7 +35,7 @@ function* approveDonationRequests({
   reqId,
 }: { reqId: number } & SagaProps): SagaIterator {
   try {
-    yield put(approvalActions.requestApproveDonationRequests);
+    yield put(approvalActions.requestApproveDonationRequests());
     const response = yield call(() => {});
     yield put(approvalActions.successApproveDonationRequests(response.data));
   } catch (error) {

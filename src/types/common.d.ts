@@ -39,6 +39,7 @@ export type ApiDonationData = {
   location: string;
   time: Date;
   productType: string;
+  onSuccess?: VoidFunction;
 };
 
 export type SagaProps = { type: string };
@@ -57,6 +58,7 @@ export type DonationData = {
     time: Date;
     type: string;
     isAvailable: boolean;
+    id: string;
   };
 };
 
@@ -69,7 +71,7 @@ export type CommonReducerType = {
 
 export interface DonationsProps extends AlertProps {
   createDonation: (donationData: ApiDonationData) => void;
-  fetchAllDonations: VoidFunction;
+  fetchAllDonations: (search?: string) => void;
   donationData: DonationData["row"][];
   requestDonation: (requestData: RequestData) => void;
 }

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, ReactNode, useState } from "react";
+import { ChangeEvent, FC, ReactNode, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -47,31 +47,41 @@ const useStyles = makeStyles({
 type Props = {
   columns: GridColDef[];
   addRequests?: boolean;
-  dialogContent?: () => ReactNode;
-  dialogHeader?: string;
-  onSubmit?: () => void;
+  rows: [];
+  onFetch: (search: string) => void;
+  dialogData?: {
+    dialogContent: () => ReactNode;
+    dialogHeader: string;
+    onSubmit: VoidFunction;
+  };
 };
 
 const StyledDatagrid: FC<Props> = ({
   columns,
   addRequests = false,
-  dialogContent,
-  dialogHeader = "",
-  onSubmit,
+  dialogData,
+  rows = [],
+  onFetch,
 }: Props) => {
+  const { dialogContent, dialogHeader, onSubmit } = dialogData || {};
   const classes = useStyles({ addRequests });
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
-    // debounce(() => api, 3000);
+    debouncedSearch(e.target.value);
   };
+
+  const debouncedSearch = useMemo(
+    () => debounce((value) => onFetch(value), 1000),
+    []
+  );
 
   return (
     <>
       <Card className={classes.body}>
-        {addRequests && (
+        {dialogData && (
           <AddDonationDialog
             dialogOpen={dialogOpen}
             setDialogOpen={setDialogOpen}
@@ -114,7 +124,7 @@ const StyledDatagrid: FC<Props> = ({
         </Box>
         <DataGrid
           columns={columns}
-          rows={[]}
+          rows={rows}
           pagination={true}
           paginationMode={"client"}
           filterMode={"client"}
