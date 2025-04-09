@@ -8,6 +8,7 @@ import StyledDatagrid from "./styledComponents/StyledDatagrid";
 import LabeledInputs from "./styledComponents/LabeledInputs";
 import { RootState } from "../apis/rootReducer";
 import {
+  donationCountSelector,
   donationDataSelector,
   errorMessageSelector,
   successMessageSelector,
@@ -101,6 +102,7 @@ const Donations: FC<DonationsProps> = ({
   fetchAllDonations,
   donationData,
   requestDonation,
+  donationCount,
 }) => {
   const [quantity, setQuantity] = useState(0);
   const [location, setLocation] = useState("");
@@ -172,6 +174,7 @@ const Donations: FC<DonationsProps> = ({
         dialogData={dialogData}
         rows={donationData as []}
         onFetch={fetchAllDonations}
+        totalDataCount={donationCount}
       />
     </>
   );
@@ -180,13 +183,14 @@ const mapStateToProps = (state: RootState) => ({
   successMessage: successMessageSelector(state),
   error: errorMessageSelector(state),
   donationData: donationDataSelector(state),
+  donationCount: donationCountSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   createDonation: (donationData: ApiDonationData) =>
     dispatch(donationActions.addDonation(donationData)),
-  fetchAllDonations: (search?: string) =>
-    dispatch(donationActions.fetchDonationData(search)),
+  fetchAllDonations: (search?: string, page?: number, pageSize?: number) =>
+    dispatch(donationActions.fetchDonationData(search, page, pageSize)),
   resetMessage: () => dispatch(donationActions.resetMessage()),
   requestDonation: (requestData: RequestData) =>
     dispatch(requestActions.createDonation(requestData)),

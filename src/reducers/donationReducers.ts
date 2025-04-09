@@ -4,6 +4,7 @@ import type { CommonReducerType, DonationData } from "../types/common";
 
 type DonationReducerType = {
   donationData: DonationData["row"][];
+  donationCount: number;
 };
 
 const initialReducer: DonationReducerType & CommonReducerType = {
@@ -11,6 +12,7 @@ const initialReducer: DonationReducerType & CommonReducerType = {
   errorMessage: "",
   type: "",
   donationData: [] as DonationData["row"][],
+  donationCount: 0,
 };
 
 export const donationReducer = (
@@ -30,6 +32,7 @@ export const donationReducer = (
         ...state,
         successMessage: action.successMessage,
         donationData: action.donationData,
+        donationCount: action.donationCount,
       };
     case DonationTypes.RESET_MESSAGE:
       return { ...state, successMessage: "", errorMessage: "" };

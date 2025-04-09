@@ -101,6 +101,7 @@ const Requests: FC<RequestsProps> = ({
         columns={columns}
         rows={allRequestData as []}
         onFetch={fetchRequests}
+        totalDataCount={0}
       />
     </>
   );

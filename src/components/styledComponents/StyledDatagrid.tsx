@@ -48,7 +48,8 @@ type Props = {
   columns: GridColDef[];
   addRequests?: boolean;
   rows: [];
-  onFetch: (search: string) => void;
+  onFetch: (search?: string, page?: number, pageSize?: number) => void;
+  totalDataCount: number;
   dialogData?: {
     dialogContent: () => ReactNode;
     dialogHeader: string;
@@ -62,6 +63,7 @@ const StyledDatagrid: FC<Props> = ({
   dialogData,
   rows = [],
   onFetch,
+  totalDataCount,
 }: Props) => {
   const { dialogContent, dialogHeader, onSubmit } = dialogData || {};
   const classes = useStyles({ addRequests });
@@ -123,12 +125,16 @@ const StyledDatagrid: FC<Props> = ({
           </Box>
         </Box>
         <DataGrid
-          columns={columns}
           rows={rows}
-          pagination={true}
-          paginationMode={"client"}
-          filterMode={"client"}
-          hideFooter={false}
+          rowCount={totalDataCount}
+          columns={columns}
+          initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+          paginationMode="server"
+          filterMode="server"
+          pageSizeOptions={[5, 10, 25]}
+          onPaginationModelChange={({ page, pageSize }) =>
+            onFetch(search, page, pageSize)
+          }
         />
       </Card>
     </>

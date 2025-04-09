@@ -104,6 +104,7 @@ const Approvals: FC<ApprovalProps> = ({
         columns={columns}
         rows={approvalRequests as []}
         onFetch={fetchApprovals}
+        totalDataCount={0}
       />
     </>
   );

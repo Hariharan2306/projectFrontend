@@ -74,6 +74,7 @@ export interface DonationsProps extends AlertProps {
   fetchAllDonations: (search?: string) => void;
   donationData: DonationData["row"][];
   requestDonation: (requestData: RequestData) => void;
+  donationCount: number;
 }
 
 // used while request is created
@@ -122,4 +123,10 @@ export interface ApprovalProps extends AlertProps {
   approveDonationRequests: (reqId: number) => void;
   approvalRequests: ApprovalSuccessAction["approvalData"][];
   requesterDetail: SuccessFetchRequestAction["requesterData"];
+}
+
+export interface FetchApiProps {
+  search?: string;
+  page?: number;
+  pageSize?: number;
 }

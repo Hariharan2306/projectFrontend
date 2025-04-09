@@ -14,3 +14,6 @@ export const errorMessageSelector = createSelector(donationSelector, (state) =>
 export const donationDataSelector = createSelector(donationSelector, (state) =>
   get(state, "donationData", [])
 );
+export const donationCountSelector = createSelector(donationSelector, (state) =>
+  get(state, "donationCount", 0)
+);

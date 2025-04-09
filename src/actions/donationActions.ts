@@ -15,19 +15,27 @@ const failureAddDonation = (errorMessage: string) => ({
   errorMessage,
 });
 
-const fetchDonationData = (search?: string) => ({
+const fetchDonationData = (
+  search?: string,
+  page?: number,
+  pageSize?: number
+) => ({
   type: DonationTypes.FETCH_DONATION_DATA,
   search,
+  page,
+  pageSize,
 });
 const requestFetchDonationData = () => ({
   type: DonationTypes.REQUEST_FETCH_DONATION_DATA,
 });
 const successFetchDonationData = (
   donationData: DonationData["row"],
+  donationCount: number,
   successMessage: string
 ) => ({
   type: DonationTypes.SUCCESS_FETCH_DONATION_DATA,
   donationData,
+  donationCount,
   successMessage,
 });
 const failureFetchDonationData = (errorMessage: string) => ({

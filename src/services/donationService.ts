@@ -10,10 +10,14 @@ export const addDonationService = async (donationData: ApiDonationData) => {
   return response;
 };
 
-export const fetchDonationService = async (search?: string) => {
+export const fetchDonationService = async (
+  search?: string,
+  page?: number,
+  pageSize?: number
+) => {
   const url = "/donations/fetchDonations";
   const response = await api.get(url, {
-    params: { search },
+    params: { search, page, pageSize },
   });
   return response;
 };

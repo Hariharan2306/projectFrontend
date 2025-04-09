@@ -7,7 +7,11 @@ import {
   fetchDonationService,
 } from "../services/donationService";
 import { parseError } from "./sagaHelper";
-import type { ApiDonationData, SagaProps } from "../types/common";
+import type {
+  ApiDonationData,
+  FetchApiProps,
+  SagaProps,
+} from "../types/common";
 
 function* addDonation({
   donationData,
@@ -24,13 +28,18 @@ function* addDonation({
 
 function* fetchDonationData({
   search,
-}: { search?: string } & SagaProps): SagaIterator {
+  page,
+  pageSize,
+}: FetchApiProps & SagaProps): SagaIterator {
   try {
     yield put(donationActions.requestFetchDonationData());
-    const response = yield call(() => fetchDonationService(search));
+    const response = yield call(() =>
+      fetchDonationService(search, page, pageSize)
+    );
     yield put(
       donationActions.successFetchDonationData(
         response.data.donationData,
+        response.data.donationCount,
         response.data.successMessage
       )
     );
