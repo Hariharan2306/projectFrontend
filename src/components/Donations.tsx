@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Box, IconButton } from "@mui/material";
+import { Box } from "@mui/material";
 import get from "lodash/get";
 import raiseRequestGif from "../assets/requestGif.gif";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
@@ -87,9 +87,14 @@ const columns = [
     disableColumnMenu: true,
     flex: 1,
     renderCell: ({ row }: DonationData) => (
-      <IconButton onClick={() => console.log(get(row, "donationId", ""))}>
-        <img src={raiseRequestGif} alt="raise request GIF" />
-      </IconButton>
+      <img
+        style={{ cursor: "pointer" }}
+        src={raiseRequestGif}
+        alt="raise request GIF"
+        onClick={() => console.log(get(row, "donationId", ""))}
+        width={40}
+        height={40}
+      />
     ),
   },
 ];

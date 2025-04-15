@@ -10,6 +10,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { SearchRounded } from "@mui/icons-material";
 import { debounce } from "lodash";
 import AddDonationDialog from "./StyledDialog";
@@ -35,12 +36,12 @@ const useStyles = makeStyles({
   },
   searchAndAdd: {
     display: "flex",
+    width: "34vw",
+    alignItems: "center",
     justifyContent: ({ addRequests }: { addRequests: boolean }) =>
       addRequests ? "space-between" : "right",
-    width: "30vw",
-    alignItems: "center",
     "& .MuiOutlinedInput-input": { padding: "9px 14px" },
-    "& .MuiTextField-root": { width: "80%" },
+    "& .MuiTextField-root": { width: "70%" },
   },
 });
 
@@ -69,6 +70,8 @@ const StyledDatagrid: FC<Props> = ({
   const classes = useStyles({ addRequests });
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -122,6 +125,14 @@ const StyledDatagrid: FC<Props> = ({
                 </Button>
               </Tooltip>
             )}
+            <Tooltip arrow title="Refresh">
+              <Button
+                variant="contained"
+                onClick={() => onFetch(search, page, pageSize)}
+              >
+                <RefreshIcon />
+              </Button>
+            </Tooltip>
           </Box>
         </Box>
         <DataGrid
@@ -132,9 +143,12 @@ const StyledDatagrid: FC<Props> = ({
           paginationMode="server"
           filterMode="server"
           pageSizeOptions={[5, 10, 25]}
-          onPaginationModelChange={({ page, pageSize }) =>
-            onFetch(search, page, pageSize)
-          }
+          onPaginationModelChange={({ page, pageSize }) => {
+            setPage(page);
+            setPageSize(pageSize);
+            onFetch(search, page, pageSize);
+          }}
+          disableRowSelectionOnClick
         />
       </Card>
     </>
