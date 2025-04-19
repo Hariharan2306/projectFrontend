@@ -30,11 +30,13 @@ function* fetchDonationData({
   search,
   page,
   pageSize,
+  dateRange,
+  quantity,
 }: FetchApiProps & SagaProps): SagaIterator {
   try {
     yield put(donationActions.requestFetchDonationData());
     const response = yield call(() =>
-      fetchDonationService(search, page, pageSize)
+      fetchDonationService(search, page, pageSize, dateRange, quantity)
     );
     yield put(
       donationActions.successFetchDonationData(

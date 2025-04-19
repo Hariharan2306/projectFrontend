@@ -17,6 +17,7 @@ import donationActions from "../actions/donationActions";
 import TimedAlert from "./styledComponents/TimedAlert";
 import type {
   ApiDonationData,
+  DateRangeType,
   DonationData,
   DonationsProps,
   RequestData,
@@ -194,8 +195,22 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   createDonation: (donationData: ApiDonationData) =>
     dispatch(donationActions.addDonation(donationData)),
-  fetchAllDonations: (search?: string, page?: number, pageSize?: number) =>
-    dispatch(donationActions.fetchDonationData(search, page, pageSize)),
+  fetchAllDonations: (
+    search?: string,
+    page?: number,
+    pageSize?: number,
+    dateRange?: DateRangeType,
+    quantity?: number[]
+  ) =>
+    dispatch(
+      donationActions.fetchDonationData(
+        search,
+        page,
+        pageSize,
+        dateRange,
+        quantity
+      )
+    ),
   resetMessage: () => dispatch(donationActions.resetMessage()),
   requestDonation: (requestData: RequestData) =>
     dispatch(requestActions.createDonation(requestData)),

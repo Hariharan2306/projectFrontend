@@ -12,16 +12,11 @@ import { DateRange, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
+import type { DateRangeType } from "../../types/common";
 
 type Props = {
   options: { label: string; value: string }[];
   onDateRangeChange: (tempDateRange: DateRangeType[]) => void;
-};
-
-type DateRangeType = {
-  startDate: Date;
-  endDate: Date;
-  key: string;
 };
 
 const useStyles = makeStyles({
@@ -31,7 +26,7 @@ const useStyles = makeStyles({
   },
   dateRangePickerContent: {
     position: "absolute",
-    top: "31.5vh",
+    top: "31vh",
     left: "30px",
     marginBottom: "20vh",
     background: "#fff",
@@ -74,9 +69,9 @@ const useStyles = makeStyles({
   icon: { cursor: "pointer", paddingTop: "5px" },
   datePicker: {
     border: "1px solid black",
-    width: "15%",
+    width: "48%",
     height: "28px",
-    borderRadius: "2px",
+    borderRadius: "3px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -98,19 +93,13 @@ const useStyles = makeStyles({
   },
 });
 
-const DatePicker: FC<Props> = (props: Props) => {
+const DatePicker: FC<Props> = (props) => {
   const {
     options = [{ label: "Quick Filter", value: "custom" }],
     onDateRangeChange,
   } = props;
   const classes = useStyles();
-  const [tempDateRange, setTempDateRange] = useState<DateRangeType[]>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+  const [tempDateRange, setTempDateRange] = useState<DateRangeType[]>([]);
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState("today");
   const [visibleDate, setVisibleDate] = useState("Today");
@@ -129,23 +118,20 @@ const DatePicker: FC<Props> = (props: Props) => {
     ]);
   }, []);
 
-  const convertStringDate = (start: Date, end: Date) => {
-    return (
-      start.getDate() +
-      "/" +
-      (start.getMonth() + 1) +
-      "/" +
-      start.getFullYear() +
-      (end instanceof Date
-        ? "-" +
-          end.getDate() +
-          "/" +
-          (end.getMonth() + 1) +
-          "/" +
-          end.getFullYear()
-        : "")
-    );
-  };
+  const convertStringDate = (start: Date, end: Date) =>
+    start.getDate() +
+    "/" +
+    (start.getMonth() + 1) +
+    "/" +
+    start.getFullYear() +
+    (end instanceof Date
+      ? "-" +
+        end.getDate() +
+        "/" +
+        (end.getMonth() + 1) +
+        "/" +
+        end.getFullYear()
+      : "");
 
   const handlePresetClick = (preset: string) => {
     const currentDate = new Date();
@@ -198,15 +184,18 @@ const DatePicker: FC<Props> = (props: Props) => {
         endDate = currentDate;
         setVisibleDate("Last Four Hours");
         break;
-      case "custom":
       case "all":
+        startDate = new Date(0);
+        endDate = new Date();
+        setVisibleDate("All");
+        break;
+      case "custom":
       default:
         startDate = new Date();
         endDate = new Date();
     }
-    if (["oneWeek", "lastFifteenDays", "lastMonth", "all"].includes(preset))
+    if (["oneWeek", "lastFifteenDays", "lastMonth"].includes(preset))
       setVisibleDate(convertStringDate(startDate, endDate));
-    else if (preset !== "custom") setShowDateRangePicker(false);
 
     setTempDateRange([{ startDate, endDate, key: "selection" }]);
   };

@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, ReactNode, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Box,
   Button,
@@ -12,10 +19,13 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import AddIcon from "@mui/icons-material/Add";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { SearchRounded } from "@mui/icons-material";
-import { debounce } from "lodash";
+import get from "lodash/get";
+import debounce from "lodash/debounce";
 import AddDonationDialog from "./StyledDialog";
 import DatePicker from "./Datepicker";
+import QuantityFilter from "./QuantityFilter";
 import { DONATION_DATE_OPTIONS } from "../../config/constants";
+import type { DateRangeType } from "../../types/common";
 
 const useStyles = makeStyles({
   body: {
@@ -34,9 +44,10 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     margin: "0 1vw 1vh 1vw",
   },
+  filters: { display: "flex", justifyContent: "space-between", width: "25%" },
   searchAndAdd: {
     display: "flex",
-    width: "34vw",
+    width: "40%",
     alignItems: "center",
     justifyContent: ({ addRequests }: { addRequests: boolean }) =>
       addRequests ? "space-between" : "right",
@@ -49,7 +60,13 @@ type Props = {
   columns: GridColDef[];
   addRequests?: boolean;
   rows: [];
-  onFetch: (search?: string, page?: number, pageSize?: number) => void;
+  onFetch: (
+    search?: string,
+    page?: number,
+    pageSize?: number,
+    dateRange?: DateRangeType,
+    quantity?: number[]
+  ) => void;
   totalDataCount: number;
   dialogData?: {
     dialogContent: () => ReactNode;
@@ -72,16 +89,34 @@ const StyledDatagrid: FC<Props> = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [dateRange, setDateRange] = useState({} as DateRangeType);
+  const [qtyRange, setQtyRange] = useState<number[]>([]);
+
+  const debouncedSearch = useMemo(
+    () => debounce((value) => onFetch(value, 0, 10, dateRange, qtyRange), 1000),
+    []
+  );
+
+  useEffect(() => {
+    const date = new Date();
+    const [startDate, endDate] = [new Date(date), new Date(date)];
+    endDate.setHours(23, 59, 59);
+    startDate.setHours(0, 0, 0, 0);
+    setDateRange({
+      startDate,
+      endDate,
+      key: "selection",
+    });
+  }, []);
+
+  useEffect(() => {
+    onFetch(search, page, pageSize, dateRange, qtyRange);
+  }, [dateRange, qtyRange]);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     debouncedSearch(e.target.value);
   };
-
-  const debouncedSearch = useMemo(
-    () => debounce((value) => onFetch(value), 1000),
-    []
-  );
 
   return (
     <>
@@ -96,12 +131,17 @@ const StyledDatagrid: FC<Props> = ({
           />
         )}
         <Box className={classes.toolBar}>
-          <DatePicker
-            options={DONATION_DATE_OPTIONS}
-            onDateRangeChange={(tempDateRange) => {
-              console.log(tempDateRange);
-            }}
-          />
+          <Box className={classes.filters}>
+            <DatePicker
+              options={DONATION_DATE_OPTIONS}
+              onDateRangeChange={(tempDateRange) =>
+                setDateRange(get(tempDateRange, "0", {}) as DateRangeType)
+              }
+            />
+            <QuantityFilter
+              onApply={(qtyRange: number[]) => setQtyRange(qtyRange)}
+            />
+          </Box>
           <Box className={classes.searchAndAdd}>
             <TextField
               id="search"
@@ -128,7 +168,9 @@ const StyledDatagrid: FC<Props> = ({
             <Tooltip arrow title="Refresh">
               <Button
                 variant="contained"
-                onClick={() => onFetch(search, page, pageSize)}
+                onClick={() =>
+                  onFetch(search, page, pageSize, dateRange, qtyRange)
+                }
               >
                 <RefreshIcon />
               </Button>

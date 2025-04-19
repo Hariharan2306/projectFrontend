@@ -8,13 +8,14 @@ type Props = {
   value: string | number | Date;
   onChange: (e: string) => void;
   type?: "number" | "password" | "mobile" | "email" | "datetime-local" | "";
+  width?: string;
 };
 
-const StyledInputBox = styled(Box)(() => ({
+const StyledInputBox = styled(Box)<{ width?: string }>(({ width }) => ({
   display: "flex",
   flexDirection: "column",
   margin: "1%",
-  width: "20vw",
+  width: width || "20vw",
   "& .MuiOutlinedInput-input": { padding: "12px 14px", width: 200 },
 }));
 
@@ -24,8 +25,9 @@ const LabeledInputs: FC<Props> = ({
   value,
   onChange,
   type,
+  width,
 }) => (
-  <StyledInputBox>
+  <StyledInputBox width={width}>
     <Typography>{label}</Typography>
     <TextField
       type={type}

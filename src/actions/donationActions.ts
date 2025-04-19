@@ -1,5 +1,9 @@
 import { DonationTypes } from "./actionTypes";
-import type { ApiDonationData, DonationData } from "../types/common";
+import type {
+  ApiDonationData,
+  DateRangeType,
+  DonationData,
+} from "../types/common";
 
 const addDonation = (donationData: ApiDonationData) => ({
   type: DonationTypes.ADD_DONATION,
@@ -18,12 +22,16 @@ const failureAddDonation = (errorMessage: string) => ({
 const fetchDonationData = (
   search?: string,
   page?: number,
-  pageSize?: number
+  pageSize?: number,
+  dateRange?: DateRangeType,
+  quantity?: number[]
 ) => ({
   type: DonationTypes.FETCH_DONATION_DATA,
   search,
   page,
   pageSize,
+  dateRange,
+  quantity,
 });
 const requestFetchDonationData = () => ({
   type: DonationTypes.REQUEST_FETCH_DONATION_DATA,

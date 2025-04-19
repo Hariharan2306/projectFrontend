@@ -129,4 +129,12 @@ export interface FetchApiProps {
   search?: string;
   page?: number;
   pageSize?: number;
+  dateRange?: DateRangeType;
+  quantity?: number[];
 }
+
+export type DateRangeType = {
+  startDate: Date;
+  endDate: Date;
+  key: "selection";
+};
