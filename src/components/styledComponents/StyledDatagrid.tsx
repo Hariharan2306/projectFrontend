@@ -21,7 +21,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { SearchRounded } from "@mui/icons-material";
 import get from "lodash/get";
 import debounce from "lodash/debounce";
-import AddDonationDialog from "./StyledDialog";
+import StyledDialog from "./StyledDialog";
 import DatePicker from "./Datepicker";
 import QuantityFilter from "./QuantityFilter";
 import { DONATION_DATE_OPTIONS } from "../../config/constants";
@@ -47,12 +47,15 @@ const useStyles = makeStyles({
   filters: { display: "flex", justifyContent: "space-between", width: "25%" },
   searchAndAdd: {
     display: "flex",
-    width: "40%",
+    width: ({ addRequests }: { addRequests: boolean }) =>
+      addRequests ? "40%" : "35%",
     alignItems: "center",
-    justifyContent: ({ addRequests }: { addRequests: boolean }) =>
-      addRequests ? "space-between" : "right",
+    justifyContent: "space-between",
     "& .MuiOutlinedInput-input": { padding: "9px 14px" },
-    "& .MuiTextField-root": { width: "70%" },
+    "& .MuiTextField-root": {
+      width: ({ addRequests }: { addRequests: boolean }) =>
+        addRequests ? "70%" : "80%",
+    },
   },
 });
 
@@ -122,7 +125,7 @@ const StyledDatagrid: FC<Props> = ({
     <>
       <Card className={classes.body}>
         {dialogData && (
-          <AddDonationDialog
+          <StyledDialog
             dialogOpen={dialogOpen}
             setDialogOpen={setDialogOpen}
             dialogContent={dialogContent}

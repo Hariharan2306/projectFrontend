@@ -1,18 +1,18 @@
 import { DonationRequestTypes } from "./actionTypes";
-import type { DonationData, RequestData } from "../types/common";
+import type { DonationData, RequestingData } from "../types/common";
 
-const createDonation = (RequestData: RequestData) => ({
+const createDonationRequest = (requestingData: RequestingData) => ({
   type: DonationRequestTypes.CREATE_DONATION_REQUESTS,
-  RequestData,
+  requestingData,
 });
-const requestCreateDonation = () => ({
+const requestCreateDonationRequest = () => ({
   type: DonationRequestTypes.REQUEST_CREATE_DONATION_REQUESTS,
 });
-const successCreateDonation = (successMessage: string) => ({
+const successCreateDonationRequest = (successMessage: string) => ({
   type: DonationRequestTypes.SUCCESS_CREATE_DONATION_REQUESTS,
   successMessage,
 });
-const failureCreateDonation = (errorMessage: string) => ({
+const failureCreateDonationRequest = (errorMessage: string) => ({
   type: DonationRequestTypes.FAILURE_CREATE_DONATION_REQUESTS,
   errorMessage,
 });
@@ -57,10 +57,10 @@ const failureWithdrawDonationRequest = (errorMessage: string) => ({
 const resetMessage = () => ({ type: DonationRequestTypes.RESET_MESSAGE });
 
 const requestActions = {
-  createDonation,
-  requestCreateDonation,
-  successCreateDonation,
-  failureCreateDonation,
+  createDonationRequest,
+  requestCreateDonationRequest,
+  successCreateDonationRequest,
+  failureCreateDonationRequest,
   fetchDonationRequests,
   requestFetchDonationRequests,
   successFetchDonationRequests,

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { Box } from "@mui/material";
-import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
 import raiseRequestGif from "../assets/requestGif.gif";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
 import LabeledInputs from "./styledComponents/LabeledInputs";
@@ -13,6 +13,10 @@ import {
   errorMessageSelector,
   successMessageSelector,
 } from "../selectors/donationsSelector";
+import {
+  successMessageSelector as requestSuccessSelector,
+  errorMessageSelector as requestErrorSelector,
+} from "../selectors/donationRequestsSelector";
 import donationActions from "../actions/donationActions";
 import TimedAlert from "./styledComponents/TimedAlert";
 import type {
@@ -20,90 +24,17 @@ import type {
   DateRangeType,
   DonationData,
   DonationsProps,
-  RequestData,
+  RequestingData,
 } from "../types/common";
 import requestActions from "../actions/requestActions";
-
-const columns = [
-  {
-    id: "donationId",
-    field: "donationId",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Donation ID",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "donatingUser",
-    field: "donor",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Donating User",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "quantity",
-    field: "quantity",
-    numeric: true,
-    disablePadding: false,
-    headerName: "Quantity",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "location",
-    field: "location",
-    numeric: true,
-    disablePadding: false,
-    headerName: "Location",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "time",
-    field: "time",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Time Available",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "type",
-    field: "productType",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Type of Product",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "request",
-    field: "request",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Claim Donation",
-    disableColumnMenu: true,
-    flex: 1,
-    renderCell: ({ row }: DonationData) => (
-      <img
-        style={{ cursor: "pointer" }}
-        src={raiseRequestGif}
-        alt="raise request GIF"
-        onClick={() => console.log(get(row, "donationId", ""))}
-        width={40}
-        height={40}
-      />
-    ),
-  },
-];
+import StyledDialog from "./styledComponents/StyledDialog";
 
 const Donations: FC<DonationsProps> = ({
   createDonation,
   successMessage,
   error,
+  requestSuccess,
+  requestError,
   resetMessage,
   fetchAllDonations,
   donationData,
@@ -114,6 +45,91 @@ const Donations: FC<DonationsProps> = ({
   const [location, setLocation] = useState("");
   const [time, setTime] = useState<Date>(new Date());
   const [productType, setProductType] = useState("");
+  // to find which donation is selected and its quantity
+  const [selectedRequestData, setSelectedRequestData] =
+    useState<RequestingData>({} as RequestingData);
+  const [requestingQty, setRequestingQty] = useState(1);
+
+  const columns = [
+    {
+      id: "donationId",
+      field: "donationId",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Donation ID",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "donatingUser",
+      field: "donor",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Donating User",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "quantity",
+      field: "quantity",
+      numeric: true,
+      disablePadding: false,
+      headerName: "Quantity",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "location",
+      field: "location",
+      numeric: true,
+      disablePadding: false,
+      headerName: "Location",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "time",
+      field: "time",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Time Available",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "type",
+      field: "productType",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Type of Product",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "request",
+      field: "request",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Claim Donation",
+      disableColumnMenu: true,
+      flex: 1,
+      renderCell: ({ row }: DonationData) => (
+        <img
+          style={{ cursor: "pointer" }}
+          src={raiseRequestGif}
+          alt="raise request GIF"
+          onClick={() =>
+            setSelectedRequestData({
+              donationId: row.donationId,
+              quantity: row.quantity,
+            })
+          }
+          width={40}
+          height={40}
+        />
+      ),
+    },
+  ];
 
   useEffect(() => {
     fetchAllDonations();
@@ -168,11 +184,37 @@ const Donations: FC<DonationsProps> = ({
 
   return (
     <>
-      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
       <TimedAlert
         resetMessage={resetMessage}
-        message={successMessage}
+        message={error || requestError}
+        type="error"
+      />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={requestSuccess || successMessage}
         type="success"
+      />
+      <StyledDialog
+        dialogOpen={!isEmpty(selectedRequestData)}
+        setDialogOpen={(_value: boolean) =>
+          setSelectedRequestData({} as RequestingData)
+        }
+        onSubmit={() =>
+          requestDonation({
+            donationId: selectedRequestData.donationId,
+            quantity: requestingQty,
+          })
+        }
+        dialogHeader="Claim Donation"
+        dialogContent={() => (
+          <LabeledInputs
+            type="number"
+            label="Quantity required"
+            value={requestingQty}
+            onChange={(value) => setRequestingQty(Number(value))}
+            slotProps={{ input: { min: 1, max: selectedRequestData.quantity } }}
+          />
+        )}
       />
       <StyledDatagrid
         columns={columns}
@@ -187,6 +229,8 @@ const Donations: FC<DonationsProps> = ({
 };
 const mapStateToProps = (state: RootState) => ({
   successMessage: successMessageSelector(state),
+  requestSuccess: requestSuccessSelector(state),
+  requestError: requestErrorSelector(state),
   error: errorMessageSelector(state),
   donationData: donationDataSelector(state),
   donationCount: donationCountSelector(state),
@@ -211,8 +255,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         quantity
       )
     ),
-  resetMessage: () => dispatch(donationActions.resetMessage()),
-  requestDonation: (requestData: RequestData) =>
-    dispatch(requestActions.createDonation(requestData)),
+  resetMessage: () => {
+    dispatch(donationActions.resetMessage());
+    dispatch(requestActions.resetMessage());
+  },
+  requestDonation: (requestingData: RequestingData) =>
+    dispatch(requestActions.createDonationRequest(requestingData)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Donations);

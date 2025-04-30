@@ -19,7 +19,7 @@ const StyledDialogContent = styled(DialogContent)(() => ({
   "& .MuiBox-root": { display: "flex" },
 }));
 
-const AddDonationDialog = ({
+const StyledDialog = ({
   dialogOpen,
   setDialogOpen,
   dialogContent = () => <></>,
@@ -43,4 +43,4 @@ const AddDonationDialog = ({
   </Dialog>
 );
 
-export default AddDonationDialog;
+export default StyledDialog;

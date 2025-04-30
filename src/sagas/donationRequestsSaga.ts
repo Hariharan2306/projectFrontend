@@ -3,24 +3,32 @@ import type { SagaIterator } from "redux-saga";
 import requestActions from "../actions/requestActions";
 import { DonationRequestTypes } from "../actions/actionTypes";
 import { parseError } from "./sagaHelper";
-import type { RequestData, SagaProps } from "../types/common";
+import {
+  fetchRequestDonationService,
+  requestDonationService,
+} from "../services/requestsService";
+import type { RequestingData, SagaProps } from "../types/common";
 
 function* requestDonation({
-  requestData,
-}: { requestData: RequestData } & SagaProps): SagaIterator {
+  requestingData,
+}: { requestingData: RequestingData } & SagaProps): SagaIterator {
   try {
-    yield put(requestActions.requestCreateDonation());
-    const response = yield call(() => {});
-    yield put(requestActions.successCreateDonation(response.data.message));
+    yield put(requestActions.requestCreateDonationRequest());
+    const response = yield call(() => requestDonationService(requestingData));
+    yield put(
+      requestActions.successCreateDonationRequest(response.data.successMessage)
+    );
   } catch (e) {
-    yield put(requestActions.failureCreateDonation(parseError(e as object)));
+    yield put(
+      requestActions.failureCreateDonationRequest(parseError(e as object))
+    );
   }
 }
 
 function* fetchRequestDonation(): SagaIterator {
   try {
     yield put(requestActions.requestFetchDonationRequests());
-    const response = yield call(() => {});
+    const response = yield call(() => fetchRequestDonationService());
     yield put(requestActions.successFetchDonationRequests(response.data));
   } catch (e) {
     yield put(

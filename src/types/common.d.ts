@@ -73,13 +73,10 @@ export interface DonationsProps extends AlertProps {
   createDonation: (donationData: ApiDonationData) => void;
   fetchAllDonations: (search?: string) => void;
   donationData: DonationData["row"][];
-  requestDonation: (requestData: RequestData) => void;
+  requestDonation: (requestingData: RequestingData) => void;
   donationCount: number;
-}
-
-// used while request is created
-export interface RequestData {
-  donationId: number;
+  requestSuccess: string;
+  requestError: string;
 }
 
 // used while request is fetched
@@ -137,4 +134,9 @@ export type DateRangeType = {
   startDate: Date;
   endDate: Date;
   key: "selection";
+};
+
+export type RequestingData = {
+  donationId: string;
+  quantity: number;
 };

@@ -17,11 +17,13 @@ import donationLogo from "../assets/donationLogo.svg";
 import type { LoggedUserData } from "../types/common";
 
 const useStyles = makeStyles({
-  body: { display: "flex" },
+  body: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   logoIcon: { width: "60px", margin: "1% 2% 0 2%" },
   tabs: {
-    width: "100%",
-    margin: "3vh 11vw 1vh 11vw",
     "& .MuiTab-root": { fontSize: "32px !important" },
     "& .MuiTabs-indicator": { backgroundColor: "unset" },
   },
