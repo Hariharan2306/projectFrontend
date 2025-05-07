@@ -91,12 +91,12 @@ const StyledDatagrid: FC<Props> = ({
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [dateRange, setDateRange] = useState({} as DateRangeType);
   const [qtyRange, setQtyRange] = useState<number[]>([]);
 
   const debouncedSearch = useMemo(
-    () => debounce((value) => onFetch(value, 0, 10, dateRange, qtyRange), 1000),
+    () => debounce((value) => onFetch(value, 0, 5, dateRange, qtyRange), 1000),
     []
   );
 

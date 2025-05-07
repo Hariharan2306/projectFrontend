@@ -2,18 +2,23 @@ import { FC, useEffect } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import { IconButton } from "@mui/material";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import get from "lodash/get";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
 import { RootState } from "../apis/rootReducer";
 import {
-  donationRequestsDataSelector,
+  requestsDataSelector,
   errorMessageSelector,
   successMessageSelector,
+  requestsCountSelector,
 } from "../selectors/donationRequestsSelector";
 import requestActions from "../actions/requestActions";
 import TimedAlert from "./styledComponents/TimedAlert";
-import type { DonationData, RequestsProps } from "../types/common";
+import type {
+  DateRangeType,
+  DonationData,
+  RequestsProps,
+} from "../types/common";
 
 const columns = [
   {
@@ -26,8 +31,8 @@ const columns = [
     flex: 1,
   },
   {
-    id: "donatingUser",
-    field: "donatingUser",
+    id: "donor",
+    field: "donor",
     numeric: false,
     disablePadding: false,
     headerName: "Donating User",
@@ -44,6 +49,15 @@ const columns = [
     flex: 1,
   },
   {
+    id: "location",
+    field: "location",
+    numeric: true,
+    disablePadding: false,
+    headerName: "Location",
+    disableColumnMenu: true,
+    flex: 1,
+  },
+  {
     id: "time",
     field: "time",
     numeric: false,
@@ -53,8 +67,8 @@ const columns = [
     flex: 1,
   },
   {
-    id: "type",
-    field: "type",
+    id: "productType",
+    field: "productType",
     numeric: false,
     disablePadding: false,
     headerName: "Type of Product",
@@ -71,7 +85,7 @@ const columns = [
     flex: 1,
     renderCell: ({ row }: DonationData) => (
       <IconButton onClick={() => console.log(get(row, "requestId", ""))}>
-        <DoneAllIcon />
+        <RemoveCircleOutlineIcon />
       </IconButton>
     ),
   },
@@ -84,10 +98,11 @@ const Requests: FC<RequestsProps> = ({
   error,
   allRequestData,
   withdrawRequests,
+  requestsCount,
 }) => {
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [fetchRequests]);
 
   return (
     <>
@@ -101,7 +116,7 @@ const Requests: FC<RequestsProps> = ({
         columns={columns}
         rows={allRequestData as []}
         onFetch={fetchRequests}
-        totalDataCount={0}
+        totalDataCount={requestsCount}
       />
     </>
   );
@@ -110,12 +125,28 @@ const Requests: FC<RequestsProps> = ({
 const mapStateToProps = (state: RootState) => ({
   successMessage: successMessageSelector(state),
   error: errorMessageSelector(state),
-  allRequestData: donationRequestsDataSelector(state),
+  allRequestData: requestsDataSelector(state),
+  requestsCount: requestsCountSelector(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   resetMessage: () => dispatch(requestActions.resetMessage()),
-  fetchRequests: () => dispatch(requestActions.fetchDonationRequests()),
+  fetchRequests: (
+    search?: string,
+    page?: number,
+    pageSize?: number,
+    dateRange?: DateRangeType,
+    quantity?: number[]
+  ) =>
+    dispatch(
+      requestActions.fetchDonationRequests(
+        search,
+        page,
+        pageSize,
+        dateRange,
+        quantity
+      )
+    ),
   withdrawRequests: (reqId: number) =>
     dispatch(requestActions.withdrawDonationRequest(reqId)),
 });

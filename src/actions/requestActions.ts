@@ -1,5 +1,9 @@
 import { DonationRequestTypes } from "./actionTypes";
-import type { DonationData, RequestingData } from "../types/common";
+import type {
+  DateRangeType,
+  AllRequestData,
+  RequestingData,
+} from "../types/common";
 
 const createDonationRequest = (requestingData: RequestingData) => ({
   type: DonationRequestTypes.CREATE_DONATION_REQUESTS,
@@ -17,22 +21,32 @@ const failureCreateDonationRequest = (errorMessage: string) => ({
   errorMessage,
 });
 
-const fetchDonationRequests = () => ({
+const fetchDonationRequests = (
+  search?: string,
+  page?: number,
+  pageSize?: number,
+  dateRange?: DateRangeType,
+  quantity?: number[]
+) => ({
   type: DonationRequestTypes.FETCH_DONATION_REQUESTS,
+  search,
+  page,
+  pageSize,
+  dateRange,
+  quantity,
 });
 const requestFetchDonationRequests = () => ({
   type: DonationRequestTypes.REQUEST_FETCH_DONATION_REQUESTS,
 });
-const successFetchDonationRequests = ({
-  successMessage,
-  donationRequests,
-}: {
-  successMessage: string;
-  donationRequests: DonationData["row"];
-}) => ({
+const successFetchDonationRequests = (
+  successMessage: string,
+  requests: AllRequestData,
+  requestsCount: number
+) => ({
   type: DonationRequestTypes.SUCCESS_FETCH_DONATION_REQUESTS,
   successMessage,
-  donationRequests,
+  requests,
+  requestsCount,
 });
 const failureFetchDonationRequests = (errorMessage: string) => ({
   type: DonationRequestTypes.FAILURE_FETCH_DONATION_REQUESTS,

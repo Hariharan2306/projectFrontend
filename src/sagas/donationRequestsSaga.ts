@@ -7,7 +7,7 @@ import {
   fetchRequestDonationService,
   requestDonationService,
 } from "../services/requestsService";
-import type { RequestingData, SagaProps } from "../types/common";
+import type { FetchApiProps, RequestingData, SagaProps } from "../types/common";
 
 function* requestDonation({
   requestingData,
@@ -25,11 +25,25 @@ function* requestDonation({
   }
 }
 
-function* fetchRequestDonation(): SagaIterator {
+function* fetchRequestDonation({
+  search,
+  page,
+  pageSize,
+  dateRange,
+  quantity,
+}: FetchApiProps & SagaProps): SagaIterator {
   try {
     yield put(requestActions.requestFetchDonationRequests());
-    const response = yield call(() => fetchRequestDonationService());
-    yield put(requestActions.successFetchDonationRequests(response.data));
+    const response = yield call(() =>
+      fetchRequestDonationService(search, page, pageSize, dateRange, quantity)
+    );
+    yield put(
+      requestActions.successFetchDonationRequests(
+        response.data.successMessage,
+        response.data.requestsData,
+        response.data.requestsCount
+      )
+    );
   } catch (e) {
     yield put(
       requestActions.failureFetchDonationRequests(parseError(e as object))

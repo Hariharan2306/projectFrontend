@@ -12,7 +12,11 @@ export const errorMessageSelector = createSelector(
   donationRequestsSelector,
   (state) => get(state, "errorMessage", "")
 );
-export const donationRequestsDataSelector = createSelector(
+export const requestsDataSelector = createSelector(
   donationRequestsSelector,
-  (state) => get(state, "donationData", [])
+  (state) => get(state, "requests", [])
+);
+export const requestsCountSelector = createSelector(
+  donationRequestsSelector,
+  (state) => get(state, "requestsCount", 0)
 );

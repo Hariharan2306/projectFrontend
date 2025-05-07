@@ -1,5 +1,9 @@
 import { api } from "../apis/helper";
-import type { LoggedUserData, RequestingData } from "../types/common";
+import type {
+  DateRangeType,
+  LoggedUserData,
+  RequestingData,
+} from "../types/common";
 
 export const requestDonationService = async (
   requestingData: RequestingData
@@ -16,9 +20,25 @@ export const requestDonationService = async (
   return response;
 };
 
-export const fetchRequestDonationService = async () => {
+export const fetchRequestDonationService = async (
+  search?: string,
+  page?: number,
+  pageSize?: number,
+  dateRange?: DateRangeType,
+  quantity?: number[]
+) => {
   const url = "/requests/";
-  const response = api.get(url, { params: {} });
+  const userData = JSON.parse(sessionStorage.getItem("loggedUserData") || "{}");
+  const response = api.get(url, {
+    params: {
+      ...userData,
+      search,
+      page,
+      pageSize,
+      dateRange: JSON.stringify(dateRange),
+      quantity: JSON.stringify(quantity),
+    },
+  });
   return response;
 };
 

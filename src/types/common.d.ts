@@ -71,7 +71,13 @@ export type CommonReducerType = {
 
 export interface DonationsProps extends AlertProps {
   createDonation: (donationData: ApiDonationData) => void;
-  fetchAllDonations: (search?: string) => void;
+  fetchAllDonations: (
+    search?: string,
+    page?: number,
+    pageSize?: number,
+    dateRange?: DateRangeType,
+    quantity?: number[]
+  ) => void;
   donationData: DonationData["row"][];
   requestDonation: (requestingData: RequestingData) => void;
   donationCount: number;
@@ -81,17 +87,26 @@ export interface DonationsProps extends AlertProps {
 
 // used while request is fetched
 export interface AllRequestData {
-  requestId: number;
-  donatingUser: string;
   quantity: number;
-  time: Date;
+  location: string;
+  time: string;
   productType: string;
+  donor: string;
+  requestId: string;
+  id: string;
 }
 
 export interface RequestsProps extends AlertProps {
-  fetchRequests: VoidFunction;
+  fetchRequests: (
+    search?: string,
+    page?: number,
+    pageSize?: number,
+    dateRange?: DateRangeType,
+    quantity?: number[]
+  ) => void;
   allRequestData: AllRequestData[];
   withdrawRequests: (reqId: number) => void;
+  requestsCount: number;
 }
 
 export interface SuccessFetchRequestAction {

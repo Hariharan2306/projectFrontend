@@ -3,14 +3,16 @@ import { DonationRequestTypes } from "../actions/actionTypes";
 import type { AllRequestData, CommonReducerType } from "../types/common";
 
 type DonationRequestReducerType = {
-  donationRequestData: AllRequestData[];
+  requests: AllRequestData[];
+  requestsCount: number;
 };
 
 const initialReducer: DonationRequestReducerType & CommonReducerType = {
   successMessage: "",
   errorMessage: "",
   type: "",
-  donationRequestData: [] as AllRequestData[],
+  requests: [] as AllRequestData[],
+  requestsCount: 0,
 };
 
 export const donationRequestReducer = (
@@ -31,7 +33,8 @@ export const donationRequestReducer = (
       return {
         ...state,
         successMessage: action.successMessage,
-        donationRequestData: action.donationRequestData,
+        requests: action.requests,
+        requestsCount: action.requestsCount,
       };
     case DonationRequestTypes.RESET_MESSAGE:
       return { ...state, successMessage: "", errorMessage: "" };
