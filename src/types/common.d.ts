@@ -105,7 +105,7 @@ export interface RequestsProps extends AlertProps {
     quantity?: number[]
   ) => void;
   allRequestData: AllRequestData[];
-  withdrawRequests: (reqId: number) => void;
+  withdrawRequests: (reqId: string) => void;
   requestsCount: number;
 }
 

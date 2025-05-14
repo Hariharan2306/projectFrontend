@@ -42,8 +42,8 @@ export const fetchRequestDonationService = async (
   return response;
 };
 
-export const withdrawDonationService = async (requestId: number) => {
-  const url = `/requests/withdraw${requestId}`;
-  const response = api.delete(url);
+export const withdrawDonationService = async (requestId: string) => {
+  const url = `/requests/withdraw/${requestId}`;
+  const response = api.put(url);
   return response;
 };

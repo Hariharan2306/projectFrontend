@@ -6,6 +6,7 @@ import { parseError } from "./sagaHelper";
 import {
   fetchRequestDonationService,
   requestDonationService,
+  withdrawDonationService,
 } from "../services/requestsService";
 import type { FetchApiProps, RequestingData, SagaProps } from "../types/common";
 
@@ -53,13 +54,16 @@ function* fetchRequestDonation({
 
 function* withdrawDonation({
   requestId,
-}: { requestId: number } & SagaProps): SagaIterator {
+}: { requestId: string } & SagaProps): SagaIterator {
   try {
     yield put(requestActions.requestWithdrawDonationRequest());
-    const response = yield call(() => {});
+    const response = yield call(() => withdrawDonationService(requestId));
     yield put(
-      requestActions.successWithdrawDonationRequest(response.data.message)
+      requestActions.successWithdrawDonationRequest(
+        response.data.successMessage
+      )
     );
+    yield put(requestActions.fetchDonationRequests());
   } catch (e) {
     yield put(
       requestActions.failureWithdrawDonationRequest(parseError(e as object))

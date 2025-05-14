@@ -20,77 +20,6 @@ import type {
   RequestsProps,
 } from "../types/common";
 
-const columns = [
-  {
-    id: "requestId",
-    field: "requestId",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Request ID",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "donor",
-    field: "donor",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Donating User",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "quantity",
-    field: "quantity",
-    numeric: true,
-    disablePadding: false,
-    headerName: "Quantity",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "location",
-    field: "location",
-    numeric: true,
-    disablePadding: false,
-    headerName: "Location",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "time",
-    field: "time",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Time Available",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "productType",
-    field: "productType",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Type of Product",
-    disableColumnMenu: true,
-    flex: 1,
-  },
-  {
-    id: "withdrawRequest",
-    field: "withdrawRequest",
-    numeric: false,
-    disablePadding: false,
-    headerName: "Withdraw Request",
-    disableColumnMenu: true,
-    flex: 1,
-    renderCell: ({ row }: DonationData) => (
-      <IconButton onClick={() => console.log(get(row, "requestId", ""))}>
-        <RemoveCircleOutlineIcon />
-      </IconButton>
-    ),
-  },
-];
-
 const Requests: FC<RequestsProps> = ({
   fetchRequests,
   resetMessage,
@@ -100,6 +29,77 @@ const Requests: FC<RequestsProps> = ({
   withdrawRequests,
   requestsCount,
 }) => {
+  const columns = [
+    {
+      id: "requestId",
+      field: "requestId",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Request ID",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "donor",
+      field: "donor",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Donating User",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "quantity",
+      field: "quantity",
+      numeric: true,
+      disablePadding: false,
+      headerName: "Quantity",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "location",
+      field: "location",
+      numeric: true,
+      disablePadding: false,
+      headerName: "Location",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "time",
+      field: "time",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Time Available",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "productType",
+      field: "productType",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Type of Product",
+      disableColumnMenu: true,
+      flex: 1,
+    },
+    {
+      id: "withdrawRequest",
+      field: "withdrawRequest",
+      numeric: false,
+      disablePadding: false,
+      headerName: "Withdraw Request",
+      disableColumnMenu: true,
+      flex: 1,
+      renderCell: ({ row }: DonationData) => (
+        <IconButton onClick={() => withdrawRequests(get(row, "requestId", ""))}>
+          <RemoveCircleOutlineIcon />
+        </IconButton>
+      ),
+    },
+  ];
+
   useEffect(() => {
     fetchRequests();
   }, [fetchRequests]);
@@ -147,7 +147,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         quantity
       )
     ),
-  withdrawRequests: (reqId: number) =>
+  withdrawRequests: (reqId: string) =>
     dispatch(requestActions.withdrawDonationRequest(reqId)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Requests);

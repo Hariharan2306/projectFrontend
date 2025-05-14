@@ -53,7 +53,7 @@ const failureFetchDonationRequests = (errorMessage: string) => ({
   errorMessage,
 });
 
-const withdrawDonationRequest = (requestId: number) => ({
+const withdrawDonationRequest = (requestId: string) => ({
   type: DonationRequestTypes.WITHDRAW_DONATION_REQUESTS,
   requestId,
 });
