@@ -1,39 +1,53 @@
 import { ApprovementTypes } from "./actionTypes";
 import type {
-  ApprovalSuccessAction,
+  DateRangeType,
+  FetchedApprovalData,
   SuccessFetchRequestAction,
 } from "../types/common";
 
-const fetchApprovals = () => ({ type: ApprovementTypes.FETCH_APPROVALS });
+const fetchApprovals = (
+  search?: string,
+  page?: number,
+  pageSize?: number,
+  dateRange?: DateRangeType,
+  quantity?: number[]
+) => ({
+  type: ApprovementTypes.FETCH_APPROVALS,
+  search,
+  page,
+  pageSize,
+  dateRange,
+  quantity,
+});
 const requestFetchApprovals = () => ({
   type: ApprovementTypes.REQUEST_FETCH_APPROVALS,
 });
-const successFetchApprovals = ({
-  successMessage,
-  approvalData,
-}: ApprovalSuccessAction) => ({
+const successFetchApprovals = (
+  successMessage: string,
+  approvalData: FetchedApprovalData,
+  approvalCount: number
+) => ({
   type: ApprovementTypes.SUCCESS_FETCH_APPROVALS,
   successMessage,
   approvalData,
+  approvalCount,
 });
 const failureFetchApprovals = (errorMessage: string) => ({
   type: ApprovementTypes.FAILURE_FETCH_APPROVALS,
   errorMessage,
 });
 
-const fetchRequesterDetails = (reqId: number) => ({
+const fetchRequesterDetails = (reqId: string) => ({
   type: ApprovementTypes.FETCH_REQUESTER_DETAILS,
   reqId,
 });
 const requestFetchRequesterDetails = () => ({
   type: ApprovementTypes.REQUEST_FETCH_REQUESTER_DETAILS,
 });
-const successFetchRequesterDetails = ({
-  successMessage,
-  requesterData,
-}: SuccessFetchRequestAction) => ({
+const successFetchRequesterDetails = (
+  requesterData: SuccessFetchRequestAction["requesterData"]
+) => ({
   type: ApprovementTypes.SUCCESS_FETCH_REQUESTER_DETAILS,
-  successMessage,
   requesterData,
 });
 const failureFetchRequesterDetails = (errorMessage: string) => ({
@@ -41,9 +55,10 @@ const failureFetchRequesterDetails = (errorMessage: string) => ({
   errorMessage,
 });
 
-const approveDonationRequests = (reqId: number) => ({
+const approveDonationRequests = (reqId: string, isApproval: boolean) => ({
   type: ApprovementTypes.APPROVE_DONATION_REQUESTS,
   reqId,
+  isApproval,
 });
 const requestApproveDonationRequests = () => ({
   type: ApprovementTypes.REQUEST_APPROVE_DONATION_REQUESTS,

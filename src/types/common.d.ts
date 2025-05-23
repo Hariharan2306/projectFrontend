@@ -110,30 +110,28 @@ export interface RequestsProps extends AlertProps {
 }
 
 export interface SuccessFetchRequestAction {
-  successMessage: string;
   requesterData: {
     userName: string;
     email: string;
     location: string;
+    mobile: string;
   };
 }
 
-export interface ApprovalSuccessAction {
-  successMessage: string;
-  approvalData: {
-    requestId: number;
-    requestingUser: string;
-    quantity: number;
-    time: Date;
-    type: string;
-  };
+export interface FetchedApprovalData {
+  requestId: number;
+  requestingUser: string;
+  quantity: number;
+  time: Date;
+  type: string;
 }
 
 export interface ApprovalProps extends AlertProps {
   fetchApprovals: VoidFunction;
-  fetchRequester: (requestId: number) => void;
-  approveDonationRequests: (reqId: number) => void;
-  approvalRequests: ApprovalSuccessAction["approvalData"][];
+  approvalCount: number;
+  fetchRequester: (requestId: string) => void;
+  approveDonationRequests: (reqId: string, isApproval: boolean) => void;
+  approvalRequests: FetchedApprovalData[];
   requesterDetail: SuccessFetchRequestAction["requesterData"];
 }
 
@@ -154,4 +152,9 @@ export type DateRangeType = {
 export type RequestingData = {
   donationId: string;
   quantity: number;
+};
+
+export type Option = {
+  label: string;
+  value: string;
 };

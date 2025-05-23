@@ -12,6 +12,8 @@ import {
   Card,
   InputAdornment,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -25,7 +27,7 @@ import StyledDialog from "./StyledDialog";
 import DatePicker from "./Datepicker";
 import QuantityFilter from "./QuantityFilter";
 import { DONATION_DATE_OPTIONS } from "../../config/constants";
-import type { DateRangeType } from "../../types/common";
+import type { DateRangeType, Option } from "../../types/common";
 
 const useStyles = makeStyles({
   body: {
@@ -44,7 +46,16 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     margin: "0 1vw 1vh 1vw",
   },
-  filters: { display: "flex", justifyContent: "space-between", width: "25%" },
+  filters: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "35%",
+    "& .MuiToggleButton-root": {
+      padding: "4px 8px",
+      border: "solid black 1px",
+      borderRadius: "3px",
+    },
+  },
   searchAndAdd: {
     display: "flex",
     width: ({ addRequests }: { addRequests: boolean }) =>
@@ -76,6 +87,7 @@ type Props = {
     dialogHeader: string;
     onSubmit: VoidFunction;
   };
+  toggleButtons?: Option[];
 };
 
 const StyledDatagrid: FC<Props> = ({
@@ -85,6 +97,10 @@ const StyledDatagrid: FC<Props> = ({
   rows = [],
   onFetch,
   totalDataCount,
+  toggleButtons = [
+    { label: "All Data", value: "all" },
+    { label: "My Data", value: "mine" },
+  ],
 }: Props) => {
   const { dialogContent, dialogHeader, onSubmit } = dialogData || {};
   const classes = useStyles({ addRequests });
@@ -94,7 +110,9 @@ const StyledDatagrid: FC<Props> = ({
   const [pageSize, setPageSize] = useState(5);
   const [dateRange, setDateRange] = useState({} as DateRangeType);
   const [qtyRange, setQtyRange] = useState<number[]>([]);
+  const [activeToggle, setActiveToggle] = useState(toggleButtons[0].value);
 
+  const webUrl = window.location.pathname;
   const debouncedSearch = useMemo(
     () => debounce((value) => onFetch(value, 0, 5, dateRange, qtyRange), 1000),
     []
@@ -144,6 +162,17 @@ const StyledDatagrid: FC<Props> = ({
             <QuantityFilter
               onApply={(qtyRange: number[]) => setQtyRange(qtyRange)}
             />
+            {webUrl !== "/approvals" && (
+              <ToggleButtonGroup
+                value={activeToggle}
+                onChange={(_e, value) => setActiveToggle(value)}
+                exclusive
+              >
+                {toggleButtons.map(({ label, value }) => (
+                  <ToggleButton value={value}>{label}</ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            )}
           </Box>
           <Box className={classes.searchAndAdd}>
             <TextField

@@ -1,13 +1,13 @@
 import get from "lodash/get";
 import { ApprovementTypes } from "../actions/actionTypes";
 import type {
-  ApprovalSuccessAction,
   CommonReducerType,
+  FetchedApprovalData,
   SuccessFetchRequestAction,
 } from "../types/common";
 
 interface ApprovalReducerType {
-  approvalData: ApprovalSuccessAction["approvalData"][];
+  approvalData: FetchedApprovalData[];
   requesterData: SuccessFetchRequestAction["requesterData"];
 }
 
@@ -15,7 +15,7 @@ const initialState: ApprovalReducerType & CommonReducerType = {
   successMessage: "",
   errorMessage: "",
   type: "",
-  approvalData: [] as ApprovalSuccessAction["approvalData"][],
+  approvalData: [] as FetchedApprovalData[],
   requesterData: {} as SuccessFetchRequestAction["requesterData"],
 };
 
@@ -25,14 +25,15 @@ export const approvalReducer = (
 ) => {
   switch (action.type) {
     case ApprovementTypes.SUCCESS_APPROVE_DONATION_REQUESTS:
-    case ApprovementTypes.SUCCESS_FETCH_REQUESTER_DETAILS:
     case ApprovementTypes.SUCCESS_FETCH_APPROVALS:
       return {
         ...state,
         successMessage: action.successMessage,
         approvalData: get(action, "approvalData", []),
-        requesterData: get(action, "requesterData", {}),
+        approvalCount: get(action, "approvalCount", 0),
       };
+    case ApprovementTypes.SUCCESS_FETCH_REQUESTER_DETAILS:
+      return { ...state, requesterData: get(action, "requesterData", {}) };
     case ApprovementTypes.FAILURE_APPROVE_DONATION_REQUESTS:
     case ApprovementTypes.FAILURE_FETCH_APPROVALS:
     case ApprovementTypes.FAILURE_FETCH_REQUESTER_DETAILS:

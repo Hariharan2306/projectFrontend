@@ -14,7 +14,7 @@ type Props = {
   slotProps?: object;
 };
 
-const StyledInputBox = styled(Box)<{ width?: string }>(({ width }) => ({
+export const StyledInputBox = styled(Box)<{ width?: string }>(({ width }) => ({
   display: "flex",
   flexDirection: "column",
   margin: "1%",

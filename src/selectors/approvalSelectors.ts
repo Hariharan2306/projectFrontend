@@ -15,6 +15,9 @@ export const errorMessageSelector = createSelector(approvalSelector, (state) =>
 export const approvalsSelector = createSelector(approvalSelector, (state) =>
   get(state, "approvalData", [])
 );
+export const approvalCountSelector = createSelector(approvalSelector, (state) =>
+  get(state, "approvalCount", 0)
+);
 export const requesterDetailSelector = createSelector(
   approvalSelector,
   (state) =>

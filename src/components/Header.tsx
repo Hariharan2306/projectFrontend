@@ -68,16 +68,18 @@ const Header: FC = () => {
       <Box className={classes.body}>
         <img className={classes.logoIcon} src={donationLogo} alt="logo" />
         <Tabs className={classes.tabs} value={tabValue}>
-          {headerTabs.map(({ value, url }) => (
-            <Tab
-              value={value}
-              label={value}
-              onClick={() => {
-                setTabValue(value);
-                navigate(`${url}`);
-              }}
-            />
-          ))}
+          {headerTabs
+            .filter(({ url }) => !(userType === "Donor" && url === "/requests"))
+            .map(({ value, url }) => (
+              <Tab
+                value={value}
+                label={value}
+                onClick={() => {
+                  setTabValue(value);
+                  navigate(`${url}`);
+                }}
+              />
+            ))}
         </Tabs>
         <IconButton
           className={classes.iconButton}
