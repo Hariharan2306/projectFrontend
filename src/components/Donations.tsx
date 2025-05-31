@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Box } from "@mui/material";
 import isEmpty from "lodash/isEmpty";
 import raiseRequestGif from "../assets/requestGif.gif";
+import HideSourceIcon from "@mui/icons-material/HideSource";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
 import LabeledInputs from "./styledComponents/LabeledInputs";
 import { RootState } from "../apis/rootReducer";
@@ -24,6 +25,7 @@ import type {
   DateRangeType,
   DonationData,
   DonationsProps,
+  LoggedUserData,
   RequestingData,
 } from "../types/common";
 import requestActions from "../actions/requestActions";
@@ -49,6 +51,11 @@ const Donations: FC<DonationsProps> = ({
   const [selectedRequestData, setSelectedRequestData] =
     useState<RequestingData>({} as RequestingData);
   const [requestingQty, setRequestingQty] = useState(1);
+  const [donorErr, setDonorErr] = useState("");
+
+  const { userType }: LoggedUserData = JSON.parse(
+    sessionStorage.getItem("loggedUserData") || "{}"
+  );
 
   const columns = [
     {
@@ -113,21 +120,29 @@ const Donations: FC<DonationsProps> = ({
       headerName: "Claim Donation",
       disableColumnMenu: true,
       flex: 1,
-      renderCell: ({ row }: DonationData) => (
-        <img
-          style={{ cursor: "pointer" }}
-          src={raiseRequestGif}
-          alt="raise request GIF"
-          onClick={() =>
-            setSelectedRequestData({
-              donationId: row.donationId,
-              quantity: row.quantity,
-            })
-          }
-          width={40}
-          height={40}
-        />
-      ),
+      renderCell: ({ row }: DonationData) => {
+        return userType === "Donor" ? (
+          <HideSourceIcon
+            onClick={() =>
+              setDonorErr("Donors aren't eligible to claim Requests")
+            }
+          />
+        ) : (
+          <img
+            style={{ cursor: "pointer" }}
+            src={raiseRequestGif}
+            alt="raise request GIF"
+            onClick={() =>
+              setSelectedRequestData({
+                donationId: row.donationId,
+                quantity: row.quantity,
+              })
+            }
+            width={40}
+            height={40}
+          />
+        );
+      },
     },
   ];
 
@@ -185,8 +200,13 @@ const Donations: FC<DonationsProps> = ({
   return (
     <>
       <TimedAlert
+        resetMessage={() => setDonorErr("")}
+        message={donorErr}
+        type="error"
+      />
+      <TimedAlert
         resetMessage={resetMessage}
-        message={error || requestError}
+        message={error || requestError || donorErr}
         type="error"
       />
       <TimedAlert

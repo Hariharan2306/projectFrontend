@@ -49,7 +49,8 @@ const useStyles = makeStyles({
   filters: {
     display: "flex",
     justifyContent: "space-between",
-    width: "35%",
+    width: ({ isApprovalModule }: MakeStyleProps) =>
+      isApprovalModule ? "27%" : "38%",
     "& .MuiToggleButton-root": {
       padding: "4px 8px",
       border: "solid black 1px",
@@ -58,19 +59,22 @@ const useStyles = makeStyles({
   },
   searchAndAdd: {
     display: "flex",
-    width: ({ addRequests }: { addRequests: boolean }) =>
-      addRequests ? "40%" : "35%",
+    width: ({ addRequests }: MakeStyleProps) => (addRequests ? "40%" : "35%"),
     alignItems: "center",
     justifyContent: "space-between",
     "& .MuiOutlinedInput-input": { padding: "9px 14px" },
     "& .MuiTextField-root": {
-      width: ({ addRequests }: { addRequests: boolean }) =>
-        addRequests ? "70%" : "80%",
+      width: ({ addRequests }: MakeStyleProps) => (addRequests ? "70%" : "80%"),
     },
   },
 });
 
-type Props = {
+type MakeStyleProps = {
+  addRequests: boolean;
+  isApprovalModule: boolean;
+};
+
+interface Props {
   columns: GridColDef[];
   addRequests?: boolean;
   rows: [];
@@ -88,7 +92,7 @@ type Props = {
     onSubmit: VoidFunction;
   };
   toggleButtons?: Option[];
-};
+}
 
 const StyledDatagrid: FC<Props> = ({
   columns,
@@ -103,7 +107,11 @@ const StyledDatagrid: FC<Props> = ({
   ],
 }: Props) => {
   const { dialogContent, dialogHeader, onSubmit } = dialogData || {};
-  const classes = useStyles({ addRequests });
+  const isApprovalModule = window.location.pathname === "/approvals";
+  const classes = useStyles({
+    addRequests,
+    isApprovalModule,
+  });
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -112,7 +120,6 @@ const StyledDatagrid: FC<Props> = ({
   const [qtyRange, setQtyRange] = useState<number[]>([]);
   const [activeToggle, setActiveToggle] = useState(toggleButtons[0].value);
 
-  const webUrl = window.location.pathname;
   const debouncedSearch = useMemo(
     () => debounce((value) => onFetch(value, 0, 5, dateRange, qtyRange), 1000),
     []
@@ -158,11 +165,13 @@ const StyledDatagrid: FC<Props> = ({
               onDateRangeChange={(tempDateRange) =>
                 setDateRange(get(tempDateRange, "0", {}) as DateRangeType)
               }
+              customWidth={isApprovalModule ? "53%" : "38%"}
             />
             <QuantityFilter
               onApply={(qtyRange: number[]) => setQtyRange(qtyRange)}
+              customWidth={isApprovalModule ? "33%" : "18%"}
             />
-            {webUrl !== "/approvals" && (
+            {!isApprovalModule && (
               <ToggleButtonGroup
                 value={activeToggle}
                 onChange={(_e, value) => setActiveToggle(value)}

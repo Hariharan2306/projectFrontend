@@ -17,6 +17,7 @@ import type { DateRangeType } from "../../types/common";
 type Props = {
   options: { label: string; value: string }[];
   onDateRangeChange: (tempDateRange: DateRangeType[]) => void;
+  customWidth?: string;
 };
 
 const useStyles = makeStyles({
@@ -69,7 +70,7 @@ const useStyles = makeStyles({
   icon: { cursor: "pointer", paddingTop: "5px" },
   datePicker: {
     border: "1px solid black",
-    width: "48%",
+    width: ({ customWidth }: { customWidth: string }) => customWidth,
     height: "28px",
     borderRadius: "3px",
     display: "flex",
@@ -97,8 +98,9 @@ const DatePicker: FC<Props> = (props) => {
   const {
     options = [{ label: "Quick Filter", value: "custom" }],
     onDateRangeChange,
+    customWidth = "38%",
   } = props;
-  const classes = useStyles();
+  const classes = useStyles({ customWidth });
   const [tempDateRange, setTempDateRange] = useState<DateRangeType[]>([]);
   const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState("today");

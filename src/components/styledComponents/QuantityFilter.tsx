@@ -13,16 +13,18 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import isEmpty from "lodash/isEmpty";
 import LabeledInputs from "./LabeledInputs";
 
-const StyledFilterBox = styled(Box)(() => ({
-  border: "1px solid black",
-  borderRadius: "3px",
-  padding: "0 8px",
-  width: "33%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  "& .MuiIconButton-root": { padding: 0 },
-}));
+const StyledFilterBox = styled(Box)<{ customWidth: string }>(
+  ({ customWidth }) => ({
+    border: "1px solid black",
+    borderRadius: "3px",
+    padding: "0 8px",
+    width: customWidth,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    "& .MuiIconButton-root": { padding: 0 },
+  })
+);
 
 const StyledMenu = styled(Menu)(() => ({
   top: "1%",
@@ -47,9 +49,9 @@ const StyledMenu = styled(Menu)(() => ({
   },
 }));
 
-type Props = { onApply: (qtyRange: number[]) => void };
+type Props = { onApply: (qtyRange: number[]) => void; customWidth?: string };
 
-const QuantityFilter: FC<Props> = ({ onApply }) => {
+const QuantityFilter: FC<Props> = ({ onApply, customWidth = "33%" }) => {
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
   const [qtyRange, setQtyRange] = useState<number[]>([5, 10]);
   const [error, setError] = useState("");
@@ -75,7 +77,7 @@ const QuantityFilter: FC<Props> = ({ onApply }) => {
 
   return (
     <>
-      <StyledFilterBox>
+      <StyledFilterBox customWidth={customWidth}>
         <Typography>Quantity</Typography>
         <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
           <ConfirmationNumberIcon />
