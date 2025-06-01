@@ -24,7 +24,8 @@ const fetchDonationData = (
   page?: number,
   pageSize?: number,
   dateRange?: DateRangeType,
-  quantity?: number[]
+  quantity?: number[],
+  activeToggle?: string
 ) => ({
   type: DonationTypes.FETCH_DONATION_DATA,
   search,
@@ -32,6 +33,7 @@ const fetchDonationData = (
   pageSize,
   dateRange,
   quantity,
+  activeToggle,
 });
 const requestFetchDonationData = () => ({
   type: DonationTypes.REQUEST_FETCH_DONATION_DATA,

@@ -1,8 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Box } from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import { styled } from "@mui/styles";
 import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
 import raiseRequestGif from "../assets/requestGif.gif";
 import HideSourceIcon from "@mui/icons-material/HideSource";
 import StyledDatagrid from "./styledComponents/StyledDatagrid";
@@ -26,10 +28,20 @@ import type {
   DonationData,
   DonationsProps,
   LoggedUserData,
+  Option,
   RequestingData,
 } from "../types/common";
 import requestActions from "../actions/requestActions";
 import StyledDialog from "./styledComponents/StyledDialog";
+import { PRODUCT_TYPES } from "../config/constants";
+
+export const StyledAutocompleteBox = styled(Box)(() => ({
+  alignSelf: "center",
+  "& .MuiOutlinedInput-root": {
+    padding: "5px 0 !important",
+    width: "18vw",
+  },
+}));
 
 const Donations: FC<DonationsProps> = ({
   createDonation,
@@ -47,6 +59,7 @@ const Donations: FC<DonationsProps> = ({
   const [location, setLocation] = useState("");
   const [time, setTime] = useState<Date>(new Date());
   const [productType, setProductType] = useState("");
+  const [productDesc, setProductDesc] = useState("");
   // to find which donation is selected and its quantity
   const [selectedRequestData, setSelectedRequestData] =
     useState<RequestingData>({} as RequestingData);
@@ -174,13 +187,33 @@ const Donations: FC<DonationsProps> = ({
           value={time}
           onChange={(value) => setTime(new Date(value))}
         />
-        <LabeledInputs
-          label="Product Type"
-          placeholder="Product Type"
-          value={productType}
-          onChange={(value) => setProductType(value)}
-        />
+        <StyledAutocompleteBox>
+          <Autocomplete
+            value={PRODUCT_TYPES.find(({ value }) => value === productType)}
+            onChange={(_e, enteredInp: Option | null) =>
+              setProductType(get(enteredInp, "value", ""))
+            }
+            inputValue={productType}
+            onInputChange={(_e, newInput) => setProductType(newInput)}
+            options={PRODUCT_TYPES}
+            renderInput={(params) => (
+              <>
+                <Typography>Product Type</Typography>
+                <TextField placeholder="Product Type" {...params} />
+              </>
+            )}
+          />
+        </StyledAutocompleteBox>
       </Box>
+      <LabeledInputs
+        label="Product Details"
+        placeholder="Tell about your Product"
+        value={productDesc}
+        onChange={(value) => setProductDesc(value)}
+        width="36vw"
+        multiline
+        rows={1}
+      />
     </>
   );
 
@@ -193,6 +226,7 @@ const Donations: FC<DonationsProps> = ({
         location,
         time,
         productType,
+        productDesc,
         onSuccess: fetchAllDonations,
       }),
   };
@@ -243,6 +277,10 @@ const Donations: FC<DonationsProps> = ({
         rows={donationData as []}
         onFetch={fetchAllDonations}
         totalDataCount={donationCount}
+        toggleButtons={[
+          { label: "All Data", value: "all" },
+          { label: "My Data", value: "mine" },
+        ]}
       />
     </>
   );
@@ -264,7 +302,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     page?: number,
     pageSize?: number,
     dateRange?: DateRangeType,
-    quantity?: number[]
+    quantity?: number[],
+    activeToggle?: string
   ) =>
     dispatch(
       donationActions.fetchDonationData(
@@ -272,7 +311,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         page,
         pageSize,
         dateRange,
-        quantity
+        quantity,
+        activeToggle
       )
     ),
   resetMessage: () => {

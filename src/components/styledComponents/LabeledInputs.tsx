@@ -12,13 +12,15 @@ type Props = {
   type?: "number" | "password" | "mobile" | "email" | "datetime-local" | "";
   width?: string;
   slotProps?: object;
+  multiline?: boolean;
+  rows?: number;
 };
 
 export const StyledInputBox = styled(Box)<{ width?: string }>(({ width }) => ({
   display: "flex",
   flexDirection: "column",
   margin: "1%",
-  width: width || "20vw",
+  width: width || "18vw",
   "& .MuiOutlinedInput-input": { padding: "12px 14px", width: "100%" },
 }));
 
@@ -30,6 +32,8 @@ const LabeledInputs: FC<Props> = ({
   type,
   width,
   slotProps,
+  multiline = false,
+  rows,
 }) => {
   const [error, setError] = useState("");
   const { min = 1, max } = get(slotProps, "input", {}) as {
@@ -59,6 +63,8 @@ const LabeledInputs: FC<Props> = ({
         helperText={error}
         onChange={inputChange}
         slotProps={slotProps}
+        multiline={multiline}
+        rows={rows}
       />
     </StyledInputBox>
   );

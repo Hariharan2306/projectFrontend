@@ -16,3 +16,11 @@ export const DONATION_DATE_OPTIONS = [
   { label: "Last 15 Days", value: "lastFifteenDays" },
   { label: "Quick Filter", value: "custom" },
 ];
+
+export const PRODUCT_TYPES = [
+  { label: "Food", value: "food" },
+  { label: "Clothing", value: "clothing" },
+  { label: "Meals", value: "meals" },
+  { label: "Gravy", value: "gravy" },
+  { label: "Toys", value: "toys" },
+];

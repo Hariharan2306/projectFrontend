@@ -49,8 +49,7 @@ const useStyles = makeStyles({
   filters: {
     display: "flex",
     justifyContent: "space-between",
-    width: ({ isApprovalModule }: MakeStyleProps) =>
-      isApprovalModule ? "27%" : "38%",
+    width: ({ noAllData }: MakeStyleProps) => (noAllData ? "27%" : "38%"),
     "& .MuiToggleButton-root": {
       padding: "4px 8px",
       border: "solid black 1px",
@@ -71,7 +70,7 @@ const useStyles = makeStyles({
 
 type MakeStyleProps = {
   addRequests: boolean;
-  isApprovalModule: boolean;
+  noAllData: boolean;
 };
 
 interface Props {
@@ -83,7 +82,8 @@ interface Props {
     page?: number,
     pageSize?: number,
     dateRange?: DateRangeType,
-    quantity?: number[]
+    quantity?: number[],
+    activeToggle?: string
   ) => void;
   totalDataCount: number;
   dialogData?: {
@@ -101,16 +101,15 @@ const StyledDatagrid: FC<Props> = ({
   rows = [],
   onFetch,
   totalDataCount,
-  toggleButtons = [
-    { label: "All Data", value: "all" },
-    { label: "My Data", value: "mine" },
-  ],
+  toggleButtons = [],
 }: Props) => {
   const { dialogContent, dialogHeader, onSubmit } = dialogData || {};
-  const isApprovalModule = window.location.pathname === "/approvals";
+  const noAllData = ["/requests", "/approvals"].includes(
+    window.location.pathname
+  );
   const classes = useStyles({
     addRequests,
-    isApprovalModule,
+    noAllData,
   });
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -121,7 +120,11 @@ const StyledDatagrid: FC<Props> = ({
   const [activeToggle, setActiveToggle] = useState(toggleButtons[0].value);
 
   const debouncedSearch = useMemo(
-    () => debounce((value) => onFetch(value, 0, 5, dateRange, qtyRange), 1000),
+    () =>
+      debounce(
+        (value) => onFetch(value, 0, 5, dateRange, qtyRange, activeToggle),
+        1000
+      ),
     []
   );
 
@@ -138,12 +141,17 @@ const StyledDatagrid: FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    onFetch(search, page, pageSize, dateRange, qtyRange);
+    onFetch(search, page, pageSize, dateRange, qtyRange, activeToggle);
   }, [dateRange, qtyRange]);
 
   const searchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     debouncedSearch(e.target.value);
+  };
+
+  const changeToggle = (value: string) => {
+    setActiveToggle(value);
+    onFetch(search, page, pageSize, dateRange, qtyRange, value);
   };
 
   return (
@@ -165,16 +173,16 @@ const StyledDatagrid: FC<Props> = ({
               onDateRangeChange={(tempDateRange) =>
                 setDateRange(get(tempDateRange, "0", {}) as DateRangeType)
               }
-              customWidth={isApprovalModule ? "53%" : "38%"}
+              customWidth={noAllData ? "53%" : "38%"}
             />
             <QuantityFilter
               onApply={(qtyRange: number[]) => setQtyRange(qtyRange)}
-              customWidth={isApprovalModule ? "33%" : "18%"}
+              customWidth={noAllData ? "33%" : "18%"}
             />
-            {!isApprovalModule && (
+            {!noAllData && (
               <ToggleButtonGroup
                 value={activeToggle}
-                onChange={(_e, value) => setActiveToggle(value)}
+                onChange={(_e, value) => changeToggle(value)}
                 exclusive
               >
                 {toggleButtons.map(({ label, value }) => (
@@ -210,7 +218,14 @@ const StyledDatagrid: FC<Props> = ({
               <Button
                 variant="contained"
                 onClick={() =>
-                  onFetch(search, page, pageSize, dateRange, qtyRange)
+                  onFetch(
+                    search,
+                    page,
+                    pageSize,
+                    dateRange,
+                    qtyRange,
+                    activeToggle
+                  )
                 }
               >
                 <RefreshIcon />
@@ -229,7 +244,7 @@ const StyledDatagrid: FC<Props> = ({
           onPaginationModelChange={({ page, pageSize }) => {
             setPage(page);
             setPageSize(pageSize);
-            onFetch(search, page, pageSize);
+            onFetch(search, page, pageSize, dateRange, qtyRange, activeToggle);
           }}
           disableRowSelectionOnClick
         />

@@ -19,9 +19,13 @@ export const fetchDonationService = async (
   page?: number,
   pageSize?: number,
   dateRange?: DateRangeType,
-  quantity?: number[]
+  quantity?: number[],
+  activeToggle?: string
 ) => {
   const url = "/donations/fetchDonations";
+  const loggedUserData: LoggedUserData = JSON.parse(
+    sessionStorage.getItem("loggedUserData") || "{}"
+  );
   const response = await api.get(url, {
     params: {
       search,
@@ -29,6 +33,8 @@ export const fetchDonationService = async (
       pageSize,
       dateRange: JSON.stringify(dateRange),
       quantity: JSON.stringify(quantity),
+      activeToggle,
+      ...loggedUserData,
     },
   });
   return response;

@@ -39,6 +39,7 @@ export type ApiDonationData = {
   location: string;
   time: Date;
   productType: string;
+  productDesc: string;
   onSuccess?: VoidFunction;
 };
 
@@ -141,6 +142,7 @@ export interface FetchApiProps {
   pageSize?: number;
   dateRange?: DateRangeType;
   quantity?: number[];
+  activeToggle?: string;
 }
 
 export type DateRangeType = {
