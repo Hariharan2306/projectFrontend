@@ -60,6 +60,7 @@ export type DonationData = {
     type: string;
     isAvailable: boolean;
     id: string;
+    productDesc: string;
   };
 };
 
@@ -154,6 +155,7 @@ export type DateRangeType = {
 export type RequestingData = {
   donationId: string;
   quantity: number;
+  description?: string;
 };
 
 export type Option = {

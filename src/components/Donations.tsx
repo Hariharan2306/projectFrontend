@@ -149,6 +149,7 @@ const Donations: FC<DonationsProps> = ({
               setSelectedRequestData({
                 donationId: row.donationId,
                 quantity: row.quantity,
+                description: row.productDesc,
               })
             }
             width={40}
@@ -231,6 +232,26 @@ const Donations: FC<DonationsProps> = ({
       }),
   };
 
+  const claimDonationDialogData = () => (
+    <>
+      <Box flexDirection="column" mb={2}>
+        <Typography display="block" variant="h6" width="100%">
+          Product Description
+        </Typography>
+        <Typography flexWrap="wrap">
+          {selectedRequestData.description || "No Description Avail"}
+        </Typography>
+      </Box>
+      <LabeledInputs
+        type="number"
+        label="Quantity required"
+        value={requestingQty}
+        onChange={(value) => setRequestingQty(Number(value))}
+        slotProps={{ input: { min: 1, max: selectedRequestData.quantity } }}
+      />
+    </>
+  );
+
   return (
     <>
       <TimedAlert
@@ -260,15 +281,7 @@ const Donations: FC<DonationsProps> = ({
           })
         }
         dialogHeader="Claim Donation"
-        dialogContent={() => (
-          <LabeledInputs
-            type="number"
-            label="Quantity required"
-            value={requestingQty}
-            onChange={(value) => setRequestingQty(Number(value))}
-            slotProps={{ input: { min: 1, max: selectedRequestData.quantity } }}
-          />
-        )}
+        dialogContent={claimDonationDialogData}
       />
       <StyledDatagrid
         columns={columns}

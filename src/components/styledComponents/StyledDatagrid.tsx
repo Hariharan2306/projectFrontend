@@ -117,7 +117,9 @@ const StyledDatagrid: FC<Props> = ({
   const [pageSize, setPageSize] = useState(5);
   const [dateRange, setDateRange] = useState({} as DateRangeType);
   const [qtyRange, setQtyRange] = useState<number[]>([]);
-  const [activeToggle, setActiveToggle] = useState(toggleButtons[0].value);
+  const [activeToggle, setActiveToggle] = useState(
+    get(toggleButtons, "[0].value", "")
+  );
 
   const debouncedSearch = useMemo(
     () =>
