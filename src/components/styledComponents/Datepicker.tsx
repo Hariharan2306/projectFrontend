@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Menu,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -21,42 +22,14 @@ type Props = {
 };
 
 const useStyles = makeStyles({
-  dateRangePickerContainer: {
-    position: "relative",
-    zIndex: 1,
-  },
-  dateRangePickerContent: {
-    position: "absolute",
-    top: "31vh",
-    left: "30px",
-    marginBottom: "20vh",
-    background: "#fff",
-    border: "1px solid #ccc",
-    padding: "10px",
-    width: "19vw",
-    zIndex: 2,
-  },
   select: {
     width: "100%",
     height: "30px",
     marginBottom: "10px",
   },
-  dateRangePickerExtraField: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "15px",
-    width: "315px",
-  },
-  dateRangePickerField: { width: "150px" },
   button: {
     background: "#1E52CC",
     color: "#fff",
-  },
-  buttonContainer: {
-    marginTop: "10px",
-    display: "flex",
-    justifyContent: "space-between",
   },
   dateRange: {
     maxHeight: "300px",
@@ -67,30 +40,36 @@ const useStyles = makeStyles({
     padding: "10px",
     "& .rdrMonth": { width: "20.667em", padding: "0 0.833em 0 0.833em" },
   },
-  icon: { cursor: "pointer", paddingTop: "5px" },
   datePicker: {
     border: "1px solid black",
     width: ({ customWidth }: { customWidth: string }) => customWidth,
     height: "28px",
     borderRadius: "3px",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     padding: "5px",
-    cursor: "pointer",
-    "& .MuiSvgIcon-root": {
-      color: "#656565",
+  },
+  menu: {
+    marginTop: "10px",
+    "& .MuiMenuItem-root": {
+      display: "flex !important",
+      justifyContent: "space-between !important",
+      width: "100% !important",
+      "&:hover": {
+        backgroundColor: "transparent",
+      },
     },
   },
   dateLabel: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    padding: "6%",
+    padding: "6% 0",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     textAlign: "center",
+    alignItems: "center",
+    cursor: "pointer",
   },
 });
 
@@ -102,9 +81,9 @@ const DatePicker: FC<Props> = (props) => {
   } = props;
   const classes = useStyles({ customWidth });
   const [tempDateRange, setTempDateRange] = useState<DateRangeType[]>([]);
-  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState("today");
   const [visibleDate, setVisibleDate] = useState("Today");
+  const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     const date = new Date();
@@ -205,7 +184,12 @@ const DatePicker: FC<Props> = (props) => {
   const handleSelect = (ranges: RangeKeyDict) => {
     setTempDateRange([ranges.selection as DateRangeType]);
     setSelectedPreset("custom");
-    setVisibleDate("Quick Filters");
+    setVisibleDate(
+      convertStringDate(
+        ranges.selection.startDate as Date,
+        ranges.selection.endDate as Date
+      )
+    );
   };
   const handlePresetChange = (event: SelectChangeEvent) => {
     setSelectedPreset(event.target.value);
@@ -214,19 +198,30 @@ const DatePicker: FC<Props> = (props) => {
 
   const handleOK = async () => {
     onDateRangeChange(tempDateRange);
-    setShowDateRangePicker(false);
+    setProfileAnchor(null);
   };
 
   return (
     <Box className={classes.datePicker}>
-      <Box className={classes.dateLabel}>
+      <Box
+        className={classes.dateLabel}
+        onClick={(e) => setProfileAnchor(e.currentTarget)}
+      >
         <Typography>{visibleDate}</Typography>
-        <InsertInvitationIcon
-          onClick={() => setShowDateRangePicker((prev) => !prev)}
-        />
+        <InsertInvitationIcon />
       </Box>
-      {showDateRangePicker && (
-        <div className={classes.dateRangePickerContent}>
+      <Menu
+        className={classes.menu}
+        open={Boolean(profileAnchor)}
+        onClose={() => setProfileAnchor(null)}
+        anchorEl={profileAnchor}
+        transformOrigin={{
+          horizontal: "right",
+          vertical: "top",
+        }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+      >
+        <MenuItem key="options" disableRipple>
           <Select
             className={classes.select}
             value={selectedPreset}
@@ -238,6 +233,8 @@ const DatePicker: FC<Props> = (props) => {
               </MenuItem>
             ))}
           </Select>
+        </MenuItem>
+        <MenuItem key="datepicker" disableRipple>
           <DateRange
             editableDateInputs
             onChange={handleSelect}
@@ -245,24 +242,24 @@ const DatePicker: FC<Props> = (props) => {
             ranges={tempDateRange}
             className={classes.dateRange}
           />
-          <div className={classes.buttonContainer}>
-            <Button
-              variant="contained"
-              onClick={() => setShowDateRangePicker(false)}
-              className={classes.button}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleOK}
-              className={classes.button}
-            >
-              OK
-            </Button>
-          </div>
-        </div>
-      )}
+        </MenuItem>
+        <MenuItem key="buttons" disableRipple>
+          <Button
+            variant="contained"
+            onClick={() => setProfileAnchor(null)}
+            className={classes.button}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleOK}
+            className={classes.button}
+          >
+            OK
+          </Button>
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
