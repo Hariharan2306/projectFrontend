@@ -1,5 +1,10 @@
 import { lazy, Suspense } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 const Requests = lazy(() => import("./components/Requests"));
 const Approvals = lazy(() => import("./components/Approvals"));
 const Header = lazy(() => import("./components/Header"));
@@ -14,6 +19,7 @@ function App() {
     <Suspense fallback={<div>Loading...</div>}>
       <Router>
         <Routes>
+          <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
