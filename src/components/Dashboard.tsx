@@ -1,4 +1,6 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import {
   Box,
   Card,
@@ -9,16 +11,21 @@ import {
 import { styled } from "@mui/material/styles";
 import { ResponsiveLine } from "@nivo/line";
 import { ResponsivePie } from "@nivo/pie";
+import get from "lodash/get";
 import DatePicker from "./styledComponents/Datepicker";
 import { DONATION_DATE_OPTIONS } from "../config/constants";
-import { get } from "lodash";
-import { DateRangeType } from "../types/common";
+import dashboardActions from "../actions/dashboardActions";
+import type { DateRangeType } from "../types/common";
 
 type StyledCardProps = {
   width?: string;
   padding?: string;
   marginBottom?: string;
 };
+
+interface DashboardProps {
+  fetchData: (dateRange: DateRangeType, dataOwnerType: boolean) => void;
+}
 
 export const StyledCard = styled(Card)<StyledCardProps>(
   ({ width = "100%", padding = "10px 15px", marginBottom }) => ({
@@ -82,7 +89,7 @@ const labelAndCountRender = (label: string, count: number) => (
   </Box>
 );
 
-const Dashboard: FC = () => {
+const Dashboard: FC<DashboardProps> = ({ fetchData }) => {
   const toggleButtons = [
     { label: "All Data", value: "all" },
     { label: "My Data", value: "mine" },
@@ -136,6 +143,10 @@ const Dashboard: FC = () => {
       color: "hsl(338, 70%, 50%)",
     },
   ];
+  useEffect(() => {
+    fetchData(dateRange, activeToggle === "mine");
+  }, []);
+
   return (
     <Box
       margin="1% 3%"
@@ -294,4 +305,10 @@ const Dashboard: FC = () => {
   );
 };
 
-export default Dashboard;
+const mapStateToProps = () => ({});
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  fetchData: (dateRange: DateRangeType, dataOwnerType: boolean) =>
+    dispatch(dashboardActions.fetchDashboardData(dateRange, dataOwnerType)),
+  resetMessage: () => dispatch(dashboardActions.resetMessage()),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

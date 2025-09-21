@@ -83,3 +83,14 @@ export const ApprovementTypes = {
   // reset success and err messages
   RESET_MESSAGE: "RESET_MESSAGE",
 };
+
+export const DashboardTypes = {
+  // reset success and err messages
+  RESET_MESSAGE: "RESET_MESSAGE",
+
+  //fetch dashboard data
+  FETCH_DASHBOARD_DATA: "FETCH_DASHBOARD_DATA",
+  REQUEST_FETCH_DASHBOARD_DATA: "REQUEST_FETCH_DASHBOARD_DATA",
+  SUCCESS_FETCH_DASHBOARD_DATA: "SUCCESS_FETCH_DASHBOARD_DATA",
+  FAILURE_FETCH_DASHBOARD_DATA: "FAILURE_FETCH_DASHBOARD_DATA",
+};

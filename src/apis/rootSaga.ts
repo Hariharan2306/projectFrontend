@@ -3,6 +3,7 @@ import usersSaga from "../sagas/usersSaga";
 import donationSaga from "../sagas/donationsSaga";
 import donationRequestsSaga from "../sagas/donationRequestsSaga";
 import approvalSaga from "../sagas/approvalSaga";
+import dashboardSaga from "../sagas/dashboardSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -10,5 +11,6 @@ export default function* rootSaga() {
     donationSaga(),
     donationRequestsSaga(),
     approvalSaga(),
+    dashboardSaga(),
   ]);
 }
