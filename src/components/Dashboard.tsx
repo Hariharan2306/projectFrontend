@@ -15,7 +15,14 @@ import get from "lodash/get";
 import DatePicker from "./styledComponents/Datepicker";
 import { DONATION_DATE_OPTIONS } from "../config/constants";
 import dashboardActions from "../actions/dashboardActions";
-import type { DateRangeType } from "../types/common";
+import {
+  errorMessageSelector,
+  fetchDashboardDataSelector,
+  successMessageSelector,
+} from "../selectors/dashboardSelectors";
+import TimedAlert from "./styledComponents/TimedAlert";
+import type { AlertProps, DateRangeType } from "../types/common";
+import type { RootState } from "../apis/rootReducer";
 
 type StyledCardProps = {
   width?: string;
@@ -23,8 +30,9 @@ type StyledCardProps = {
   marginBottom?: string;
 };
 
-interface DashboardProps {
+interface DashboardProps extends AlertProps {
   fetchData: (dateRange: DateRangeType, dataOwnerType: boolean) => void;
+  dasboardData: any;
 }
 
 export const StyledCard = styled(Card)<StyledCardProps>(
@@ -89,7 +97,13 @@ const labelAndCountRender = (label: string, count: number) => (
   </Box>
 );
 
-const Dashboard: FC<DashboardProps> = ({ fetchData }) => {
+const Dashboard: FC<DashboardProps> = ({
+  fetchData,
+  dasboardData,
+  successMessage,
+  error,
+  resetMessage,
+}) => {
   const toggleButtons = [
     { label: "All Data", value: "all" },
     { label: "My Data", value: "mine" },
@@ -148,95 +162,161 @@ const Dashboard: FC<DashboardProps> = ({ fetchData }) => {
   }, []);
 
   return (
-    <Box
-      margin="1% 3%"
-      display="flex"
-      justifyContent="space-between"
-      flexDirection="column"
-      gap="2vh"
-    >
+    <>
+      <TimedAlert resetMessage={resetMessage} message={error} type="error" />
+      <TimedAlert
+        resetMessage={resetMessage}
+        message={successMessage}
+        type="success"
+      />
       <Box
-        width="30%"
-        alignItems="center"
-        alignSelf="end"
+        margin="1% 3%"
         display="flex"
         justifyContent="space-between"
+        flexDirection="column"
+        gap="2vh"
       >
-        <ToggleButtonGroup
-          value={activeToggle}
-          onChange={(_e, value) => setActiveToggle(value)}
-          exclusive
+        <Box
+          width="30%"
+          alignItems="center"
+          alignSelf="end"
+          display="flex"
+          justifyContent="space-between"
         >
-          {toggleButtons.map(({ label, value }) => (
-            <ToggleButton value={value}>{label}</ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-        <DatePicker
-          options={DONATION_DATE_OPTIONS}
-          onDateRangeChange={(tempDateRange) =>
-            setDateRange(get(tempDateRange, "0", {}) as DateRangeType)
-          }
-          customWidth="45%"
-        />
-      </Box>
-      <Box display="flex" justifyContent="space-between">
-        <Box flexWrap="wrap" flexDirection="column" width="40%">
-          <StyledCard marginBottom="5%">
-            <Typography
-              gutterBottom
-              fontSize="3.5rem"
-              variant="h5"
-              component="div"
-            >
-              My Donations
-            </Typography>
-            <Box className="donationList">
-              {labelAndCountRender("Toys", 5)}
-              {labelAndCountRender("Food", 5)}
-              {labelAndCountRender("Clothes", 5)}
-            </Box>
-          </StyledCard>
-          <StyledCard>
-            <Box height="330px" width="640px">
-              <ResponsivePie
-                data={pieData}
-                margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-                innerRadius={0.5}
-                padAngle={0.6}
-                cornerRadius={2}
-                activeOuterRadiusOffset={8}
-                arcLinkLabelsSkipAngle={10}
-                arcLinkLabelsTextColor="#333333"
-                arcLinkLabelsThickness={2}
-                arcLinkLabelsColor={{ from: "color" }}
-                arcLabelsSkipAngle={10}
-                arcLabelsTextColor={{
-                  from: "color",
-                  modifiers: [["darker", 2]],
+          <ToggleButtonGroup
+            value={activeToggle}
+            onChange={(_e, value) => setActiveToggle(value)}
+            exclusive
+          >
+            {toggleButtons.map(({ label, value }) => (
+              <ToggleButton value={value}>{label}</ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <DatePicker
+            options={DONATION_DATE_OPTIONS}
+            onDateRangeChange={(tempDateRange) =>
+              setDateRange(get(tempDateRange, "0", {}) as DateRangeType)
+            }
+            customWidth="45%"
+          />
+        </Box>
+        <Box display="flex" justifyContent="space-between">
+          <Box flexWrap="wrap" flexDirection="column" width="40%">
+            <StyledCard marginBottom="5%">
+              <Typography
+                gutterBottom
+                fontSize="3.5rem"
+                variant="h5"
+                component="div"
+              >
+                My Donations
+              </Typography>
+              <Box className="donationList">
+                {labelAndCountRender("Toys", 5)}
+                {labelAndCountRender("Food", 5)}
+                {labelAndCountRender("Clothes", 5)}
+              </Box>
+            </StyledCard>
+            <StyledCard>
+              <Box height="330px" width="640px">
+                <ResponsivePie
+                  data={pieData}
+                  margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                  innerRadius={0.5}
+                  padAngle={0.6}
+                  cornerRadius={2}
+                  activeOuterRadiusOffset={8}
+                  arcLinkLabelsSkipAngle={10}
+                  arcLinkLabelsTextColor="#333333"
+                  arcLinkLabelsThickness={2}
+                  arcLinkLabelsColor={{ from: "color" }}
+                  arcLabelsSkipAngle={10}
+                  arcLabelsTextColor={{
+                    from: "color",
+                    modifiers: [["darker", 2]],
+                  }}
+                  legends={[
+                    {
+                      anchor: "bottom",
+                      direction: "row",
+                      translateY: 56,
+                      itemWidth: 100,
+                      itemHeight: 18,
+                      symbolShape: "circle",
+                    },
+                  ]}
+                  layers={[
+                    "arcs",
+                    "arcLabels",
+                    "arcLinkLabels",
+                    "legends",
+                    (props) => (
+                      <text
+                        x={props.centerX}
+                        y={props.centerY - props.radius - 20}
+                        textAnchor="end"
+                        style={{ fontSize: 18, fontWeight: "bold" }}
+                      >
+                        Donation Breakdown
+                      </text>
+                    ),
+                  ]}
+                />
+              </Box>
+            </StyledCard>
+          </Box>
+
+          <StyledCard width="52%" padding="20px 15px 10px 0">
+            <Box height="530px" width="640px">
+              <ResponsiveLine
+                data={data}
+                colors={({ color }) => color}
+                curve="monotoneX"
+                margin={{ top: 30, right: 80, bottom: 50, left: 70 }}
+                axisBottom={{ legend: "Month", legendOffset: 36 }}
+                axisLeft={{ legend: "Value", legendOffset: -55 }}
+                pointSize={10}
+                enableGridX={false}
+                enableGridY={false}
+                theme={{
+                  axis: {
+                    legend: {
+                      text: { fontSize: 15, fill: "#000", margin: 10 },
+                    },
+                    domain: { line: { stroke: "#000", strokeWidth: 2 } },
+                    ticks: {
+                      text: { fontSize: 14, fill: "#333" },
+                      line: { stroke: "#000" },
+                    },
+                  },
                 }}
+                useMesh={true}
                 legends={[
                   {
-                    anchor: "bottom",
-                    direction: "row",
-                    translateY: 56,
-                    itemWidth: 100,
-                    itemHeight: 18,
+                    anchor: "bottom-right",
+                    direction: "column",
+                    itemWidth: 80,
+                    itemHeight: 22,
                     symbolShape: "circle",
+                    translateX: 100,
                   },
                 ]}
                 layers={[
-                  "arcs",
-                  "arcLabels",
-                  "arcLinkLabels",
+                  "grid",
+                  "axes",
+                  "lines",
+                  "points",
+                  "slices",
+                  "mesh",
                   "legends",
                   (props) => (
                     <text
-                      x={props.centerX}
-                      y={props.centerY - props.radius - 20}
-                      textAnchor="end"
-                      style={{ fontSize: 18, fontWeight: "bold" }}
+                      x={props.innerWidth / 2}
+                      y={-10}
+                      textAnchor="middle"
+                      style={{ fontSize: 18, fontWeight: "bold", fill: "#000" }}
                     >
-                      Donation Breakdown
+                      Donation Trends
                     </text>
                   ),
                 ]}
@@ -244,68 +324,16 @@ const Dashboard: FC<DashboardProps> = ({ fetchData }) => {
             </Box>
           </StyledCard>
         </Box>
-
-        <StyledCard width="52%" padding="20px 15px 10px 0">
-          <Box height="530px" width="640px">
-            <ResponsiveLine
-              data={data}
-              colors={({ color }) => color}
-              curve="monotoneX"
-              margin={{ top: 30, right: 80, bottom: 50, left: 70 }}
-              axisBottom={{ legend: "Month", legendOffset: 36 }}
-              axisLeft={{ legend: "Value", legendOffset: -55 }}
-              pointSize={10}
-              enableGridX={false}
-              enableGridY={false}
-              theme={{
-                axis: {
-                  legend: { text: { fontSize: 15, fill: "#000", margin: 10 } },
-                  domain: { line: { stroke: "#000", strokeWidth: 2 } },
-                  ticks: {
-                    text: { fontSize: 14, fill: "#333" },
-                    line: { stroke: "#000" },
-                  },
-                },
-              }}
-              useMesh={true}
-              legends={[
-                {
-                  anchor: "bottom-right",
-                  direction: "column",
-                  itemWidth: 80,
-                  itemHeight: 22,
-                  symbolShape: "circle",
-                  translateX: 100,
-                },
-              ]}
-              layers={[
-                "grid",
-                "axes",
-                "lines",
-                "points",
-                "slices",
-                "mesh",
-                "legends",
-                (props) => (
-                  <text
-                    x={props.innerWidth / 2}
-                    y={-10}
-                    textAnchor="middle"
-                    style={{ fontSize: 18, fontWeight: "bold", fill: "#000" }}
-                  >
-                    Donation Trends
-                  </text>
-                ),
-              ]}
-            />
-          </Box>
-        </StyledCard>
       </Box>
-    </Box>
+    </>
   );
 };
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state: RootState) => ({
+  dasboardData: fetchDashboardDataSelector(state),
+  successMessage: successMessageSelector(state),
+  error: errorMessageSelector(state),
+});
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   fetchData: (dateRange: DateRangeType, dataOwnerType: boolean) =>
     dispatch(dashboardActions.fetchDashboardData(dateRange, dataOwnerType)),
