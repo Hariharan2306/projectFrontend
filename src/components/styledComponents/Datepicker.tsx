@@ -81,19 +81,27 @@ const DatePicker: FC<Props> = (props) => {
   } = props;
   const classes = useStyles({ customWidth });
   const [tempDateRange, setTempDateRange] = useState<DateRangeType[]>([]);
-  const [selectedPreset, setSelectedPreset] = useState("today");
-  const [visibleDate, setVisibleDate] = useState("Today");
+  const [selectedPreset, setSelectedPreset] = useState("all");
+  const [visibleDate, setVisibleDate] = useState("All");
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    const date = new Date();
-    const [startDate, endDate] = [new Date(date), new Date(date)];
-    endDate.setHours(23, 59, 59);
-    startDate.setHours(0, 0, 0, 0);
+    // un comment for default as today view
+    // const date = new Date();
+    // const [startDate, endDate] = [new Date(date), new Date(date)];
+    // endDate.setHours(23, 59, 59);
+    // startDate.setHours(0, 0, 0, 0);
     setTempDateRange([
       {
-        startDate,
-        endDate,
+        startDate: new Date(0),
+        endDate: new Date(),
+        key: "selection",
+      },
+    ]);
+    onDateRangeChange([
+      {
+        startDate: new Date(0),
+        endDate: new Date(),
         key: "selection",
       },
     ]);

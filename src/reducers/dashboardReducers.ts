@@ -1,16 +1,16 @@
 import { DashboardTypes } from "../actions/actionTypes";
-import type { CommonReducerType } from "../types/common";
+import type { CommonReducerType, DasboardData } from "../types/common";
 
 const initialState = {
   successMessage: "",
   errorMessage: "",
   type: "",
-  dashboardData: {},
+  dashboardData: {} as DasboardData,
 };
 
 export const dashboardReducer = (
   state = initialState,
-  action: CommonReducerType & { dashboardData: any }
+  action: CommonReducerType & { dashboardData: DasboardData }
 ) => {
   switch (action.type) {
     case DashboardTypes.SUCCESS_FETCH_DASHBOARD_DATA:

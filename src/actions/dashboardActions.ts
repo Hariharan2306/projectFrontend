@@ -1,5 +1,5 @@
 import { DashboardTypes } from "./actionTypes";
-import type { DateRangeType } from "../types/common";
+import type { DasboardData, DateRangeType } from "../types/common";
 
 const fetchDashboardData = (
   dateRange: DateRangeType,
@@ -14,7 +14,7 @@ const requestFetchDashboardData = () => ({
 });
 const successFetchDashboardData = (
   successMessage: string,
-  dashboardData: any
+  dashboardData: DasboardData
 ) => ({
   type: DashboardTypes.SUCCESS_FETCH_DASHBOARD_DATA,
   successMessage,

@@ -18,9 +18,9 @@ export const DONATION_DATE_OPTIONS = [
 ];
 
 export const PRODUCT_TYPES = [
-  { label: "Food", value: "food" },
-  { label: "Clothing", value: "clothing" },
-  { label: "Meals", value: "meals" },
-  { label: "Gravy", value: "gravy" },
-  { label: "Toys", value: "toys" },
+  { label: "Food", value: "Food" },
+  { label: "Clothing", value: "Clothing" },
+  { label: "Meals", value: "Meals" },
+  { label: "Gravy", value: "Gravy" },
+  { label: "Toys", value: "Toys" },
 ];

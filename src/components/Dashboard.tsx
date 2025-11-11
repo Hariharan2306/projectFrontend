@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import { ResponsiveLine } from "@nivo/line";
 import { ResponsivePie } from "@nivo/pie";
 import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
 import DatePicker from "./styledComponents/Datepicker";
 import { DONATION_DATE_OPTIONS } from "../config/constants";
 import dashboardActions from "../actions/dashboardActions";
@@ -21,7 +22,7 @@ import {
   successMessageSelector,
 } from "../selectors/dashboardSelectors";
 import TimedAlert from "./styledComponents/TimedAlert";
-import type { AlertProps, DateRangeType } from "../types/common";
+import type { AlertProps, DasboardData, DateRangeType } from "../types/common";
 import type { RootState } from "../apis/rootReducer";
 
 type StyledCardProps = {
@@ -32,7 +33,7 @@ type StyledCardProps = {
 
 interface DashboardProps extends AlertProps {
   fetchData: (dateRange: DateRangeType, dataOwnerType: boolean) => void;
-  dasboardData: any;
+  dasboardData: DasboardData;
 }
 
 export const StyledCard = styled(Card)<StyledCardProps>(
@@ -112,54 +113,11 @@ const Dashboard: FC<DashboardProps> = ({
   const [activeToggle, setActiveToggle] = useState(
     get(toggleButtons, "[0].value", "")
   );
+  const { pieData = [], graphData = [] } = dasboardData as DasboardData;
 
-  const data = [
-    {
-      id: "sales",
-      color: "#ff5733",
-      data: [
-        { x: "Jan", y: 400 },
-        { x: "Feb", y: 300 },
-        { x: "Mar", y: 500 },
-        { x: "Apr", y: 220 },
-        { x: "Jun", y: 50 },
-      ],
-    },
-    {
-      id: "expenses",
-      color: "#4287f5",
-      data: [
-        { x: "Jan", y: 240 },
-        { x: "Feb", y: 200 },
-        { x: "Mar", y: 350 },
-        { x: "Apr", y: 550 },
-        { x: "Jun", y: 150 },
-      ],
-    },
-  ];
-  const pieData = [
-    {
-      id: "Toys",
-      label: "Toys",
-      value: 264,
-      color: "hsl(233, 70%, 50%)",
-    },
-    {
-      id: "Food",
-      label: "Food",
-      value: 160,
-      color: "hsl(295, 70%, 50%)",
-    },
-    {
-      id: "Clothes",
-      label: "Clothes",
-      value: 59,
-      color: "hsl(338, 70%, 50%)",
-    },
-  ];
   useEffect(() => {
-    fetchData(dateRange, activeToggle === "mine");
-  }, []);
+    !isEmpty(dateRange) && fetchData(dateRange, activeToggle === "mine");
+  }, [dateRange, activeToggle]);
 
   return (
     <>
@@ -269,7 +227,7 @@ const Dashboard: FC<DashboardProps> = ({
           <StyledCard width="52%" padding="20px 15px 10px 0">
             <Box height="530px" width="640px">
               <ResponsiveLine
-                data={data}
+                data={graphData}
                 colors={({ color }) => color}
                 curve="monotoneX"
                 margin={{ top: 30, right: 80, bottom: 50, left: 70 }}

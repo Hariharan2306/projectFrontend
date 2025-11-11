@@ -162,3 +162,21 @@ export type Option = {
   label: string;
   value: string;
 };
+
+export type PieData = {
+  color: string;
+  id: string;
+  label: string;
+  value: number;
+}[];
+
+export type GraphData = {
+  id: string;
+  color: string;
+  data: { x: string; y: number }[];
+}[];
+
+export interface DasboardData {
+  pieData: PieData;
+  graphData: GraphData;
+}

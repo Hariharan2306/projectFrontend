@@ -131,18 +131,6 @@ const StyledDatagrid: FC<Props> = ({
   );
 
   useEffect(() => {
-    const date = new Date();
-    const [startDate, endDate] = [new Date(date), new Date(date)];
-    endDate.setHours(23, 59, 59);
-    startDate.setHours(0, 0, 0, 0);
-    setDateRange({
-      startDate,
-      endDate,
-      key: "selection",
-    });
-  }, []);
-
-  useEffect(() => {
     onFetch(search, page, pageSize, dateRange, qtyRange, activeToggle);
   }, [dateRange, qtyRange]);
 

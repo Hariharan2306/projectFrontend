@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../apis/rootReducer";
 import get from "lodash/get";
+import { DasboardData } from "../types/common";
 
 const dashboardSelector = (state: RootState) => state.dashboard;
 
@@ -13,5 +14,5 @@ export const errorMessageSelector = createSelector(dashboardSelector, (state) =>
 );
 export const fetchDashboardDataSelector = createSelector(
   dashboardSelector,
-  (state) => get(state, "dashboardData", {})
+  (state) => get(state, "dashboardData", {}) as DasboardData
 );
