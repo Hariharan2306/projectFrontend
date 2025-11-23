@@ -48,8 +48,7 @@ export const StyledCard = styled(Card)<StyledCardProps>(
     "& .donationList": {
       display: "flex",
       justifyContent: "space-between",
-      justifySelf: "center",
-      width: "60%",
+      width: "100%",
       marginBottom: "3%",
     },
     "& .labelAndCount": {
@@ -170,9 +169,9 @@ const Dashboard: FC<DashboardProps> = ({
                 My Donations
               </Typography>
               <Box className="donationList">
-                {labelAndCountRender("Toys", 5)}
-                {labelAndCountRender("Food", 5)}
-                {labelAndCountRender("Clothes", 5)}
+                {pieData.map(({ label, value }) =>
+                  labelAndCountRender(label, value)
+                )}
               </Box>
             </StyledCard>
             <StyledCard>

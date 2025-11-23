@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  FC,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { ChangeEvent, FC, ReactNode, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -121,14 +114,12 @@ const StyledDatagrid: FC<Props> = ({
     get(toggleButtons, "[0].value", "")
   );
 
-  const debouncedSearch = useMemo(
-    () =>
-      debounce(
-        (value) => onFetch(value, 0, 5, dateRange, qtyRange, activeToggle),
-        1000
-      ),
-    []
-  );
+  const debouncedSearch = useRef(
+    debounce(
+      (value) => onFetch(value, 0, 5, dateRange, qtyRange, activeToggle),
+      1000
+    )
+  ).current;
 
   useEffect(() => {
     onFetch(search, page, pageSize, dateRange, qtyRange, activeToggle);
